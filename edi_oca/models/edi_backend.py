@@ -178,8 +178,10 @@ class EDIBackend(models.Model):
         return [
             ("code", "=", code),
             "|",
-            ("backend_type_id", "=", self.backend_type_id.id),
             ("backend_id", "=", self.id),
+            "&",
+            ("backend_type_id", "=", self.backend_type_id.id),
+            ("backend_id", "=", False),
         ]
 
     def exchange_generate(self, exchange_record, store=True, force=False, **kw):
