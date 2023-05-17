@@ -195,6 +195,7 @@ class EDIBackend(models.Model):
         self.ensure_one()
         self._check_exchange_generate(exchange_record, force=force)
         output = self._exchange_generate(exchange_record, **kw)
+        message = None
         if output and store:
             if not isinstance(output, bytes):
                 output = output.encode()
@@ -214,7 +215,7 @@ class EDIBackend(models.Model):
                 exchange_record.update(
                     {"edi_exchange_state": state, "exchange_error": error}
                 )
-                exchange_record._notify_related_record(message)
+        exchange_record.notify_action_complete("generate", message=message)
         return output
 
     def _check_exchange_generate(self, exchange_record, force=False):
@@ -297,8 +298,7 @@ class EDIBackend(models.Model):
                     "exchanged_on": fields.Datetime.now(),
                 }
             )
-            if message:
-                exchange_record._notify_related_record(message)
+        exchange_record.notify_action_complete("send", message=message)
         return res
 
     def _swallable_exceptions(self):
@@ -436,6 +436,7 @@ class EDIBackend(models.Model):
             return False
         state = exchange_record.edi_exchange_state
         error = False
+        message = None
         try:
             self._exchange_process(exchange_record)
         except self._swallable_exceptions() as err:
@@ -462,6 +463,7 @@ class EDIBackend(models.Model):
                 exchange_record._notify_error("process_ko")
             elif state == "input_processed":
                 exchange_record._notify_done()
+        exchange_record.notify_action_complete("process", message=message)
         return res
 
     def _exchange_process(self, exchange_record):
@@ -514,8 +516,7 @@ class EDIBackend(models.Model):
                     "exchanged_on": fields.Datetime.now(),
                 }
             )
-            if message:
-                exchange_record._notify_related_record(message)
+        exchange_record.notify_action_complete("receive", message=message)
         return res
 
     def _exchange_receive_check(self, exchange_record):
