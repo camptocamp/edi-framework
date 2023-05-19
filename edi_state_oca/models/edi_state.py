@@ -14,13 +14,20 @@ class EDIState(models.Model):
 
     name = fields.Char(translate=True, required=True)
     description = fields.Char(translate=True)
-    # TODO: make it unique across workflows?
     code = fields.Char()
     workflow_id = fields.Many2one(
         comodel_name="edi.state.workflow",
         ondelete="cascade",
     )
     is_default = fields.Boolean()
+
+    _sql_constraints = [
+        (
+            "state_workflow_code_uniq",
+            "unique(code, workflow_id)",
+            "Code must be unique per each workflow.",
+        )
+    ]
 
     @api.constrains("is_default")
     def _check_is_default(self):

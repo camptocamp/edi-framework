@@ -35,3 +35,6 @@ class EDIStateWorkflow(models.Model):
 
     def get_default_state(self):
         return self.state_ids.filtered(lambda x: x.is_default)
+
+    def get_state(self, code):
+        return self.state_ids.filtered(lambda x: x.code == code)

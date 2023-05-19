@@ -73,7 +73,7 @@ class TestEDIState(EDIBackendCommonTestCase):
         self.assertFalse(self.wf2_ko.is_valid_for_model(self.consumer_model._name))
         self.assertTrue(self.wf2_ko.is_valid_for_model("res.partner"))
 
-    def test_mixin(self):
+    def test_mixin_edi_set_state(self):
         self.assertFalse(self.consumer_record.edi_state_id)
         self.assertFalse(self.consumer_record.edi_state_workflow_id)
         for state in self.wf1_ok.state_ids:
@@ -84,6 +84,20 @@ class TestEDIState(EDIBackendCommonTestCase):
                 exceptions.UserError, f"State {state.name} not allowed"
             ):
                 self.consumer_record._edi_set_state(state)
+        self.assertEqual(
+            self.consumer_record.edi_find_state(code="OK_1"), self.wf1_ok.state_ids[0]
+        )
+
+    def test_mixin_edi_find_state(self):
+        with self.assertRaises(AssertionError):
+            self.assertEqual(self.consumer_model.edi_find_state())
+        self.assertEqual(
+            self.consumer_record.edi_find_state(code="OK_1"), self.wf1_ok.state_ids[0]
+        )
+        self.wf1_ok.state_ids[1].is_default = True
+        self.assertEqual(
+            self.consumer_record.edi_find_state(default=True), self.wf1_ok.state_ids[1]
+        )
 
     def test_check_is_default(self):
         self.wf2_ko.state_ids[0].is_default = True
@@ -91,3 +105,33 @@ class TestEDIState(EDIBackendCommonTestCase):
             exceptions.UserError, "Only one state per workflow"
         ):
             self.wf2_ko.state_ids[1].is_default = True
+
+    def test_get_state(self):
+        self.assertEqual(self.wf1_ok.get_state("OK_1"), self.wf1_ok.state_ids[0])
+        self.assertEqual(self.wf1_ok.get_state("OK_2"), self.wf1_ok.state_ids[1])
+        self.assertEqual(self.wf1_ok.get_state("OK_10"), self.wf1_ok.state_ids.browse())
+
+    def test_get_state_for_model(self):
+        self.assertEqual(
+            self.exc_type.get_state_for_model(self.consumer_model._name, "OK_1"),
+            self.wf1_ok.state_ids[0],
+        )
+        self.assertEqual(
+            self.exc_type.get_state_for_model(self.consumer_model._name, "OK_2"),
+            self.wf1_ok.state_ids[1],
+        )
+        self.assertEqual(
+            self.exc_type.get_state_for_model("res.partner", "KO_2"),
+            self.wf2_ko.state_ids.browse(),
+        )
+        self.exc_type.state_workflow_ids += self.wf2_ko
+        self.assertEqual(
+            self.exc_type.get_state_for_model("res.partner", "KO_2"),
+            self.wf2_ko.state_ids[1],
+        )
+
+    def test_exc_type_one_wf_per_model(self):
+        with self.assertRaisesRegex(
+            exceptions.UserError, "Only one workflow per model is allowed"
+        ):
+            self.exc_type.state_workflow_ids += self.wf1_ok.copy()
