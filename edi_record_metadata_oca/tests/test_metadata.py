@@ -31,6 +31,11 @@ class TestEDIMetadata(EDIBackendCommonTestCase):
         cls.loader.restore_registry()
         super().tearDownClass()
 
+    def test_fields(self):
+        self.exc_record.set_metadata({"foo": "baz", "bar": "waa"})
+        self.assertTrue(self.exc_record.metadata)
+        self.assertTrue(self.exc_record.metadata_display)
+
     def test_no_store(self):
         consumer_record = self.consumer_model.create(
             {
