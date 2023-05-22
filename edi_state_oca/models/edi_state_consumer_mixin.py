@@ -30,8 +30,11 @@ class EDIStateConsumerMixin(models.AbstractModel):
 
     def edi_is_valid_state(self, state=None, exc_type=None):
         state = state or self.edi_state_id
+        if not state:
+            return True
         # TODO: this implies we have `origin_exchange_type_id` from exchange.consumer.mixin
         exc_type = exc_type or self.origin_exchange_type_id
+        assert exc_type, f"No exchange type given for {self._name}#{self.id}"
         return (
             state.workflow_id.is_valid_for_model(self._name)
             and state.id in exc_type.state_workflow_ids.state_ids.ids
@@ -42,5 +45,6 @@ class EDIStateConsumerMixin(models.AbstractModel):
         for rec in self:
             if not rec.edi_is_valid_state():
                 raise exceptions.UserError(
-                    _("State %(name)s not allowed") % dict(name=rec.edi_state_id.name)
+                    _("State %(name)s [%(code)s] not allowed")
+                    % dict(name=rec.edi_state_id.name, code=rec.edi_state_id.code)
                 )
