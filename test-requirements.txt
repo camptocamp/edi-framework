@@ -1,1 +1,3 @@
 odoo-test-helper
+
+odoo14-addon-edi_oca @ git+https://github.com/OCA/edi@refs/pull/778/head#subdirectory=setup/edi_oca
