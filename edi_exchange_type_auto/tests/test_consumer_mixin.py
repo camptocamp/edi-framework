@@ -298,7 +298,7 @@ class TestConsumerAutoMixinCase(EDIBackendCommonTestCase):
             with mock.patch.object(
                 type(self.model), "_edi_auto_handle"
             ) as mocked_handler:
-                record = self.model.create({"name": "Test auto 2"})
+                self.model.create({"name": "Test auto 2"})
                 mocked_handler.assert_called()
                 mocked_handler.reset_mock()
                 self.model.create({"name": "Test auto 3"})
