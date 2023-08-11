@@ -209,11 +209,13 @@ class EDIExchangeRecord(models.Model):
             result.append((rec.id, name))
         return result
 
-    @api.model
-    def create(self, vals):
-        vals["identifier"] = self._get_identifier()
-        return super().create(vals)
+    @api.model_create_multi
+    def create(self, vals_list):
+        for vals in vals_list:
+            vals["identifier"] = self._get_identifier()
+        return super().create(vals_list)
 
+    @api.model
     def _get_identifier(self):
         return self.env["ir.sequence"].next_by_code("edi.exchange")
 
