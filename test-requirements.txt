@@ -1,1 +1,4 @@
 odoo_test_helper
+odoo-addon-base_edifact @ git+https://github.com/OCA/edi.git@refs/pull/835/head#subdirectory=setup/base_edifact
+odoo-addon-sale_order_import_edifact @ git+https://github.com/OCA/edi.git@refs/pull/821/head#subdirectory=setup/sale_order_import_edifact
+odoo-addon-edi_sale_oca @ git+https://github.com/OCA/edi-framework.git@refs/pull/31/head#subdirectory=setup/edi_sale_oca
