@@ -4,13 +4,16 @@
 {
     "name": "EDI Product",
     "summary": """
-       EDI framework configuration and base logic for products and products packaging""",
+       EDI framework configuration and base logic for products, product packagings
+       and product barcodes.
+       """,
     "version": "16.0.1.0.0",
     "license": "AGPL-3",
     "author": "ForgeFlow, Odoo Community Association (OCA)",
     "website": "https://github.com/OCA/edi-framework",
     "depends": [
         "product",
+        "product_multi_barcode",
         "edi_oca",
     ],
     "data": [

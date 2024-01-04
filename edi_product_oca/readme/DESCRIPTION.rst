@@ -1,1 +1,1 @@
-Provide basic configuration for products and product packaging with EDI framework.
+Provide basic configuration for products, product packagings and product barcodes with EDI framework.
