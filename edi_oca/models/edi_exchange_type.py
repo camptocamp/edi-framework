@@ -50,7 +50,9 @@ class EDIExchangeType(models.Model):
     direction = fields.Selection(
         selection=[("input", "Input"), ("output", "Output")], required=True
     )
-    exchange_filename_pattern = fields.Char(default="{record_name}-{type.code}-{dt}")
+    exchange_filename_pattern = fields.Char(
+        default="{record_name}-{type.code}-{dt}-{seq}"
+    )
     # TODO make required if exchange_filename_pattern is
     exchange_file_ext = fields.Char()
     # TODO: this flag should be probably deprecated
@@ -130,6 +132,9 @@ class EDIExchangeType(models.Model):
             "Use it directly or within models rules (domain or snippet)."
         ),
     )
+    exchange_filename_sequence_id = fields.Many2one(
+        "ir.sequence", "Exchange Filename Sequence"
+    )
 
     _sql_constraints = [
         (
@@ -188,6 +193,14 @@ class EDIExchangeType(models.Model):
         now = datetime.now(utc).astimezone(tz)
         return slugify(now.strftime(date_pattern))
 
+    def _make_exchange_filename_sequence(self):
+        self.ensure_one()
+        return (
+            self.exchange_filename_sequence_id
+            and self.exchange_filename_sequence_id.next_by_id()
+            or ""
+        )
+
     def _make_exchange_filename(self, exchange_record):
         """Generate filename."""
         pattern = self.exchange_filename_pattern
@@ -195,6 +208,7 @@ class EDIExchangeType(models.Model):
         if ext:
             pattern += ".{ext}"
         dt = self._make_exchange_filename_datetime()
+        seq = self._make_exchange_filename_sequence()
         record_name = self._get_record_name(exchange_record)
         record = exchange_record
         if exchange_record.model and exchange_record.res_id:
@@ -205,6 +219,7 @@ class EDIExchangeType(models.Model):
             record_name=record_name,
             type=self,
             dt=dt,
+            seq=seq,
             ext=ext,
         )
 
