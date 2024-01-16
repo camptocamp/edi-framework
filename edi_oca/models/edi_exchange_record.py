@@ -65,6 +65,7 @@ class EDIExchangeRecord(models.Model):
         selection=[
             # Common states
             ("new", "New"),
+            ("superseded", "Superseded"),
             ("validate_error", "Error on validation"),
             # output exchange states
             ("output_pending", "Waiting to be sent"),
@@ -142,7 +143,7 @@ class EDIExchangeRecord(models.Model):
     @api.constrains("edi_exchange_state")
     def _constrain_edi_exchange_state(self):
         for rec in self:
-            if rec.edi_exchange_state in ("new", "validate_error"):
+            if rec.edi_exchange_state in ("new", "superseded", "validate_error"):
                 continue
             if not rec.edi_exchange_state.startswith(rec.direction):
                 raise exceptions.ValidationError(
@@ -573,3 +574,19 @@ class EDIExchangeRecord(models.Model):
         params = self._job_delay_params()
         params.update(kw)
         return super().with_delay(**params)
+
+    def get_fresher_duplicates(self):
+        self.ensure_one()
+        fresher_duplicates = self.search(
+            [
+                ("id", ">", self.id),
+                ("res_id", "=", self.res_id),
+                ("model", "=", self.model),
+                ("type_id", "=", self.type_id.id),
+                ("exchange_file", "!=", False),
+            ]
+        )
+        return fresher_duplicates
+
+    def has_fresher_duplicates(self):
+        return len(self.get_fresher_duplicates()) > 0
