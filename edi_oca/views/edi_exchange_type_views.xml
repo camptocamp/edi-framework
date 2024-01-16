@@ -48,6 +48,11 @@
                             <field name="partner_ids" widget="many2many_tags" />
                             <field name="job_channel_id" />
                             <field name="quick_exec" />
+                            <field name="deduplicate_on_send" />
+                            <field
+                                name="delete_obsolete_records"
+                                attrs="{'invisible': [('deduplicate_on_send', '=', False)]}"
+                            />
                         </group>
                     </group>
                     <notebook>
