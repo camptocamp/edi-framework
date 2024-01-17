@@ -324,10 +324,20 @@ class EDIBackend(models.Model):
             raise exceptions.UserError(
                 _("Record ID=%d has no file to send!") % exchange_record.id
             )
-        return exchange_record.edi_exchange_state in [
-            "output_pending",
-            "output_error_on_send",
-        ]
+        is_superseded = (
+            exchange_record.type_id.deduplicate_on_send
+            and exchange_record.has_fresher_duplicates()
+        )
+        if is_superseded:
+            exchange_record.write({"edi_exchange_state": "superseded"})
+        return (
+            exchange_record.edi_exchange_state
+            in [
+                "output_pending",
+                "output_error_on_send",
+            ]
+            and not is_superseded
+        )
 
     def _exchange_send(self, exchange_record):
         component = self._get_component(exchange_record, "send")
@@ -637,3 +647,35 @@ class EDIBackend(models.Model):
             if raise_if_not:
                 raise
             return False
+
+    def _cron_delete_superseded_records(self, **kw):
+        for backend in self:
+            backend._delete_superseded_records(**kw)
+
+    def _delete_superseded_records(self, record_ids=None, **kw):
+        """
+        Go through superseded records, and delete those for which their type
+        has delete_superseded_records = True.
+        """
+        superseded_records = self.exchange_record_model.search(
+            self._superseded_records_domain(record_ids=record_ids)
+        )
+        _logger.info(
+            "EDI Exchange delete records: found %d superseded records to delete.",
+            len(superseded_records),
+        )
+        if superseded_records:
+            superseded_records.unlink()
+
+    def _superseded_records_domain(self, record_ids=None):
+        """Domain for superseded records need to delete."""
+        domain = [
+            ("backend_id", "=", self.id),
+            ("type_id.direction", "=", "output"),
+            ("type_id.delete_superseded_records", "=", True),
+            ("edi_exchange_state", "=", "superseded"),
+            ("exchange_file", "!=", False),
+        ]
+        if record_ids:
+            domain.append(("id", "in", record_ids))
+        return domain
