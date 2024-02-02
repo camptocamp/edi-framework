@@ -7,20 +7,25 @@
 
 import base64
 import logging
+import traceback
+from io import StringIO
 
 from odoo import _, exceptions, fields, models
 
 from odoo.addons.component.exception import NoComponentError
+from odoo.addons.queue_job.exception import RetryableJobError
 
 from ..exceptions import EDIValidationError
 
 _logger = logging.getLogger(__name__)
 
 
-def _get_exception_msg(exc):
-    if hasattr(exc, "args") and isinstance(exc.args[0], str):
-        return exc.args[0]
-    return repr(exc)
+def _get_exception_msg():
+    buff = StringIO()
+    traceback.print_exc(file=buff)
+    traceback_txt = buff.getvalue()
+    buff.close()
+    return traceback_txt
 
 
 class EDIBackend(models.Model):
@@ -211,18 +216,20 @@ class EDIBackend(models.Model):
                 }
             )
         if output:
+            message = exchange_record._exchange_status_message("generate_ok")
             try:
                 self._validate_data(exchange_record, output)
-            except EDIValidationError as err:
-                error = _get_exception_msg(err)
+            except EDIValidationError:
+                error = _get_exception_msg()
                 state = "validate_error"
                 message = exchange_record._exchange_status_message("validate_ko")
                 exchange_record.update(
                     {"edi_exchange_state": state, "exchange_error": error}
                 )
         exchange_record.notify_action_complete("generate", message=message)
-        return output
+        return message
 
+    # TODO: unify to all other checkes that return something
     def _check_exchange_generate(self, exchange_record, force=False):
         exchange_record.ensure_one()
         if (
@@ -270,19 +277,34 @@ class EDIBackend(models.Model):
         # In case already sent: skip sending and check the state
         check = self._output_check_send(exchange_record)
         if not check:
-            return False
+            return "Nothing to do. Likely already sent."
+        # In case obsolete: skip sending
+        is_obsolete = self._check_obsolete(exchange_record)
+        if is_obsolete:
+            return "Nothing to do. Likely obsolete."
         state = exchange_record.edi_exchange_state
         error = False
         message = None
+        res = ""
         try:
             self._exchange_send(exchange_record)
-        except self._swallable_exceptions() as err:
+            _logger.debug("%s sent", exchange_record.identifier)
+        except self._send_retryable_exceptions() as err:
+            error = _get_exception_msg()
+            _logger.debug("%s send failed. To be retried.", exchange_record.identifier)
+            raise RetryableJobError(
+                error, **exchange_record._job_retry_params()
+            ) from err
+        except self._swallable_exceptions():
             if self.env.context.get("_edi_send_break_on_error"):
                 raise
-            error = _get_exception_msg(err)
+            error = _get_exception_msg()
             state = "output_error_on_send"
             message = exchange_record._exchange_status_message("send_ko")
-            res = False
+            res = f"Error: {error}"
+            _logger.debug(
+                "%s send failed. Marked as errored.", exchange_record.identifier
+            )
         else:
             # TODO: maybe the send handler should return desired message and state
             message = exchange_record._exchange_status_message("send_ok")
@@ -292,7 +314,7 @@ class EDIBackend(models.Model):
                 if self.output_sent_processed_auto
                 else "output_sent"
             )
-            res = True
+            res = message
         finally:
             exchange_record.write(
                 {
@@ -314,6 +336,12 @@ class EDIBackend(models.Model):
             exceptions.UserError,
             exceptions.ValidationError,
         )
+
+    def _send_retryable_exceptions(self):
+        # IOError is a base class for all connection errors
+        # OSError is a base class for all errors
+        # when dealing w/ internal or external systems or filesystems
+        return (IOError, OSError)
 
     def _output_check_send(self, exchange_record):
         if exchange_record.direction != "output":
@@ -339,7 +367,6 @@ class EDIBackend(models.Model):
         for backend in self:
             backend._check_output_exchange_sync(**kw)
 
-    # TODO: consider splitting cron in 2 (1 for receiving, 1 for processing)
     def _check_output_exchange_sync(
         self, skip_send=False, skip_sent=True, record_ids=None
     ):
@@ -360,7 +387,12 @@ class EDIBackend(models.Model):
             len(new_records),
         )
         for rec in new_records:
-            rec.with_delay().action_exchange_generate()
+            job1 = rec.delayable().action_exchange_generate()
+            if not skip_send:
+                # Chain send job.
+                # Raise prio to max to send the record out as fast as possible.
+                job1.on_done(rec.delayable(priority=0).action_exchange_send())
+            job1.delay()
 
         if skip_send:
             return
@@ -438,22 +470,21 @@ class EDIBackend(models.Model):
         # In case already processed: skip processing and check the state
         check = self._exchange_process_check(exchange_record)
         if not check:
-            return False
+            return "Nothing to do. Likely already processed."
         old_state = state = exchange_record.edi_exchange_state
         error = False
         message = None
         try:
-            self._exchange_process(exchange_record)
-        except self._swallable_exceptions() as err:
+            res = self._exchange_process(exchange_record)
+        except self._swallable_exceptions():
             if self.env.context.get("_edi_process_break_on_error"):
                 raise
-            error = _get_exception_msg(err)
+            error = _get_exception_msg()
             state = "input_processed_error"
-            res = False
+            res = f"Error: {error}"
         else:
             error = None
             state = "input_processed"
-            res = True
         finally:
             exchange_record.write(
                 {
@@ -487,7 +518,7 @@ class EDIBackend(models.Model):
         # In case already processed: skip processing and check the state
         check = self._exchange_receive_check(exchange_record)
         if not check:
-            return False
+            return "Nothing to do. Likely already received."
         state = exchange_record.edi_exchange_state
         error = False
         message = None
@@ -497,23 +528,23 @@ class EDIBackend(models.Model):
             if content:
                 exchange_record._set_file_content(content)
                 self._validate_data(exchange_record)
-        except EDIValidationError as err:
-            error = _get_exception_msg(err)
+        except EDIValidationError:
+            error = _get_exception_msg()
             state = "validate_error"
             message = exchange_record._exchange_status_message("validate_ko")
-            res = False
-        except self._swallable_exceptions() as err:
+            res = f"Validation error: {error}"
+        except self._swallable_exceptions():
             if self.env.context.get("_edi_receive_break_on_error"):
                 raise
-            error = _get_exception_msg(err)
+            error = _get_exception_msg()
             state = "input_receive_error"
             message = exchange_record._exchange_status_message("receive_ko")
-            res = False
+            res = f"Input error: {error}"
         else:
             message = exchange_record._exchange_status_message("receive_ok")
             error = None
             state = "input_received"
-            res = True
+            res = message
         finally:
             exchange_record.write(
                 {
@@ -637,3 +668,43 @@ class EDIBackend(models.Model):
             if raise_if_not:
                 raise
             return False
+
+    def _check_obsolete(self, exchange_record):
+        res = False
+        if exchange_record.is_obsolete:
+            exchange_record.write({"edi_exchange_state": "obsolete"})
+            res = True
+        return res
+
+    def _cron_delete_obsolete_records(self, **kw):
+        for backend in self:
+            backend._delete_obsolete_records(**kw)
+
+    def _delete_obsolete_records(self, record_ids=None, **kw):
+        """Cleanup obsolete records.
+
+        Go through types with `delete_obsolete_records` flag on
+        and delete their obsolete records if any.
+        """
+        obsolete_records = self.exchange_record_model.search(
+            self._obsolete_records_domain(record_ids=record_ids)
+        )
+        _logger.info(
+            "EDI Exchange delete records: found %d obsolete records to delete.",
+            len(obsolete_records),
+        )
+        if obsolete_records:
+            obsolete_records.unlink()
+
+    def _obsolete_records_domain(self, record_ids=None):
+        """Domain for obsolete records need to delete."""
+        domain = [
+            ("backend_id", "=", self.id),
+            ("type_id.direction", "=", "output"),
+            ("type_id.delete_obsolete_records", "=", True),
+            ("edi_exchange_state", "=", "obsolete"),
+            ("exchange_file", "!=", False),
+        ]
+        if record_ids:
+            domain.append(("id", "in", record_ids))
+        return domain
