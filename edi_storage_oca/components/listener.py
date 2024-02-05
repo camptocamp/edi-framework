@@ -25,16 +25,18 @@ class EdiStorageListener(Component):
             return False
         self._add_post_commit_hook(
             utils.move_files,
-            self.storage,
+            storage,
             [(from_dir / filename).as_posix()],
             to_dir.as_posix(),
         )
         return True
 
-    def _add_post_commit_hook(self, move_func, sftp_filepath, sftp_destination_path):
+    def _add_post_commit_hook(
+        self, move_func, storage, sftp_filepath, sftp_destination_path
+    ):
         """Add hook after commit to move the file when transaction is over."""
         self.env.cr.postcommit.add(
-            functools.partial(move_func, sftp_filepath, sftp_destination_path)
+            functools.partial(move_func, storage, sftp_filepath, sftp_destination_path)
         )
 
     def on_edi_exchange_done(self, record):
