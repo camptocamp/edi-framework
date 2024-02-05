@@ -10,7 +10,7 @@ def add_file(storage, path, filedata, binary=False):
     data = filedata
     if not binary:
         data = base64.b64decode(filedata)
-    relative_path = path.as_posix()
+    relative_path = path
     fs = storage.fs
     path = relative_path.split(fs.sep)[:-1]
     if not fs.exists(fs.sep.join(path)):
@@ -34,8 +34,7 @@ def find_files(storage, pattern, relative_path="", **kw) -> list[str]:
 
 
 def get_file(storage, path, binary=False):
-    relative_path = path.as_posix()
-    data = storage.fs.read_bytes(relative_path)
+    data = storage.fs.read_bytes(path)
     if not binary and data:
         data = base64.b64encode(data)
     return data
