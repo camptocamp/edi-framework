@@ -118,6 +118,10 @@ class EDIExchangeRecord(models.Model):
         default=False,
         compute="_compute_is_obsolete",
     )
+    block_obsolescence = fields.Boolean(
+        default=False,
+        help="Flag record that can never be marked as obsolete",
+    )
     company_id = fields.Many2one("res.company", string="Company")
 
     _sql_constraints = [
