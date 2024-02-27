@@ -42,7 +42,11 @@ class EdiStorageListener(Component):
     def on_edi_exchange_done(self, record):
         storage = record.backend_id.storage_id
         res = False
-        if record.direction == "input" and storage:
+        if (
+            record.direction == "input"
+            and storage
+            and record.move_file_after_processing
+        ):
             file = record.exchange_filename
             pending_dir = record.type_id._storage_fullpath(
                 record.backend_id.input_dir_pending
@@ -66,7 +70,11 @@ class EdiStorageListener(Component):
     def on_edi_exchange_error(self, record):
         storage = record.backend_id.storage_id
         res = False
-        if record.direction == "input" and storage:
+        if (
+            record.direction == "input"
+            and storage
+            and record.move_file_after_processing
+        ):
             file = record.exchange_filename
             pending_dir = record.type_id._storage_fullpath(
                 record.backend_id.input_dir_pending
