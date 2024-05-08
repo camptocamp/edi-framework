@@ -456,7 +456,10 @@ class EDIBackend(models.Model):
             raise exceptions.UserError(
                 _("Record ID=%d is not meant to be processed") % exchange_record.id
             )
-        if not exchange_record.exchange_file:
+        if (
+            not exchange_record.exchange_file
+            and not exchange_record.type_id.allow_empty_files_on_receive
+        ):
             raise exceptions.UserError(
                 _("Record ID=%d has no file to process!") % exchange_record.id
             )
@@ -527,9 +530,7 @@ class EDIBackend(models.Model):
         content = None
         try:
             content = self._exchange_receive(exchange_record)
-            if content:
-                exchange_record._set_file_content(content)
-                self._validate_data(exchange_record)
+            self._process_received_content(exchange_record, content)
         except EDIValidationError:
             error = _get_exception_msg()
             state = "validate_error"
@@ -578,6 +579,21 @@ class EDIBackend(models.Model):
         if component:
             return component.receive()
         raise NotImplementedError()
+
+    def _process_received_content(self, exchange_record, content):
+        # Do nothing when the content is None (result of FileNotFoundError/OSError)
+        if content is None:
+            return None
+
+        if len(content) == 0:
+            if not exchange_record.type_id.allow_empty_files_on_receive:
+                raise ValueError(
+                    "File is Empty and Empty Files are not allowed for this exchange type"
+                )
+            return None
+        exchange_record._set_file_content(content)
+        self._validate_data(exchange_record)
+        return None
 
     def _cron_check_input_exchange_sync(self, **kw):
         for backend in self:
