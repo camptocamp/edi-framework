@@ -184,6 +184,17 @@ class EDIExchangeType(models.Model):
     allow_empty_files_on_receive = fields.Boolean(
         string="Allow Empty Files on Receive", default=False
     )
+    deduplicate_on_send = fields.Boolean(
+        string="Deduplicate on Send",
+        default=False,
+        help="Before sending an exchange record, check if a fresher one does not "
+        "exist for same record; if so, mark oldest one as obsolete.",
+    )
+    delete_obsolete_records = fields.Boolean(
+        string="Delete obsolete records",
+        default=True,
+        help="Delete records marked as obsolete.",
+    )
 
     _sql_constraints = [
         (
