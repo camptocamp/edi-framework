@@ -113,7 +113,15 @@ class TestEDIExchangeRecordSecurity(EDIBackendCommonTestCase):
     @mute_logger("odoo.addons.base.models.ir_rule")
     def test_rule_no_read(self):
         exchange_record = self.create_record()
-        self.user.write({"groups_id": [(4, self.group.id)]})
+        self.user.write(
+            {
+                "groups_id": [
+                    # To read the related queue jobs
+                    (4, self.env.ref("queue_job.group_queue_job_manager").id),
+                    (4, self.group.id),
+                ]
+            }
+        )
         self.assertTrue(exchange_record.with_user(self.user).read())
         self.consumer_record.name = "no_rule"
         model = self.consumer_record
