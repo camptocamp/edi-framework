@@ -115,10 +115,9 @@ class EDIExchangeRecord(models.Model):
         compute="_compute_retryable",
         help="The record state can be rolled back manually in case of failure.",
     )
-<<<<<<< HEAD
     related_queue_jobs_count = fields.Integer(
         compute="_compute_related_queue_jobs_count"
-=======
+    )
     is_obsolete = fields.Boolean(
         default=False,
         compute="_compute_is_obsolete",
@@ -126,7 +125,6 @@ class EDIExchangeRecord(models.Model):
     block_obsolescence = fields.Boolean(
         default=False,
         help="Flag record that can never be marked as obsolete",
->>>>>>> 0d4b9bdd1b180b06e0eab7b61aeee4d7bc3dc40e
     )
     company_id = fields.Many2one("res.company", string="Company")
 
