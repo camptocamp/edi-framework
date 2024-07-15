@@ -60,7 +60,11 @@
                             />
                             <field
                                 name="allow_empty_files_on_receive"
-                                attrs="{'invisible': [('direction', '=', 'output')]}"
+                                attrs="{'invisible': [('direction', '=', 'output')]}"/>
+                            <field name="deduplicate_on_send" />
+                            <field
+                                name="delete_obsolete_records"
+                                attrs="{'invisible': [('deduplicate_on_send', '=', False)]}"
                             />
                         </group>
                     </group>
