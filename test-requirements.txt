@@ -2,3 +2,4 @@ odoo_test_helper
 responses
 xmlunittest
 odoo-addon-edi_utm_oca @ git+https://github.com/OCA/edi-framework.git@refs/pull/101/head#subdirectory=setup/edi_utm_oca
+odoo-addon-queue_job @ git+https://github.com/OCA/queue.git@refs/pull/674/head#subdirectory=setup/queue_job
