@@ -61,7 +61,7 @@ class EDIAutoExchangeConsumerMixin(models.AbstractModel):
         res = super().write(vals)
         if todo:
             candidates._edi_auto_handle(todo)
-        return res
+        return records
 
     # TODO
     # def unlink(self):
