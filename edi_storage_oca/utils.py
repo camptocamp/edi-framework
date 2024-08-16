@@ -5,9 +5,12 @@ import base64
 import os
 import re
 
+import logging
+logger = logging.getLogger(__name__)
 
 def add_file(storage, path, filedata, binary=False):
     data = filedata
+    logger.info(path)
     if not binary:
         data = base64.b64decode(filedata)
     relative_path = path
@@ -15,6 +18,11 @@ def add_file(storage, path, filedata, binary=False):
     path = relative_path.split(fs.sep)[:-1]
     if not fs.exists(fs.sep.join(path)):
         fs.makedirs(fs.sep.join(path))
+    logger.info("########################## CHECK THIS PATH #############################")
+    logger.info(relative_path)
+    logger.info(fs.sep)
+    logger.info(fs.path)
+    logger.info(path)
     with fs.open(relative_path, "wb") as f:
         f.write(data)
 
