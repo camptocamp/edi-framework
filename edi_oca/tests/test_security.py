@@ -229,3 +229,16 @@ class TestEDIExchangeRecordSecurity(EDIBackendCommonTestCase):
         msg = rf"not allowed to modify '{model._description}' \({model._name}\)"
         with self.assertRaisesRegex(AccessError, msg):
             exchange_record.with_user(self.user).write({"external_identifier": "1234"})
+
+    @mute_logger("odoo.addons.base.models.ir_model")
+    def test_no_group_no_read_child(self):
+        exchange_record = self.create_record()
+        model = self.consumer_record
+        # Create child record without specific model and res_id
+        # It should follow the access rights of the parent
+        child_exchange_record = self.backend.create_record(
+            "test_csv_output", {"parent_id": exchange_record.id}
+        )
+        msg = rf"not allowed to access '{model._description}' \({model._name}\)"
+        with self.assertRaisesRegex(AccessError, msg):
+            child_exchange_record.with_user(self.user).read()
