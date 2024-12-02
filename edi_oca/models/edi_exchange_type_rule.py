@@ -28,11 +28,12 @@ class EDIExchangeTypeRule(models.Model):
         ondelete="cascade",
     )
     model_id = fields.Many2one(
+        string="Model",
         comodel_name="ir.model",
         help="Apply to this model",
         ondelete="cascade",
     )
-    model = fields.Char(related="model_id.model")  # Tech field
+    model = fields.Char(related="model_id.model", string="Model Tech Name")
     enable_domain = fields.Char(
         string="Enable on domain", help="Filter domain to be checked on Models"
     )
