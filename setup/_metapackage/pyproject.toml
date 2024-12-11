@@ -1,11 +1,12 @@
 [project]
 name = "odoo-addons-oca-edi-framework"
-version = "17.0.20241204.1"
+version = "17.0.20241211.0"
 dependencies = [
     "odoo-addon-edi_account_oca>=17.0dev,<17.1dev",
     "odoo-addon-edi_endpoint_oca>=17.0dev,<17.1dev",
     "odoo-addon-edi_exchange_template_oca>=17.0dev,<17.1dev",
     "odoo-addon-edi_oca>=17.0dev,<17.1dev",
+    "odoo-addon-edi_project_oca>=17.0dev,<17.1dev",
     "odoo-addon-edi_webservice_oca>=17.0dev,<17.1dev",
 ]
 classifiers=[
