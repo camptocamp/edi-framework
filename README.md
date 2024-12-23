@@ -28,7 +28,7 @@ addon | version | maintainers | summary
 [edi_exchange_deduplicate_oca](edi_exchange_deduplicate_oca/) | 16.0.1.1.0 | [![simahawk](https://github.com/simahawk.png?size=30px)](https://github.com/simahawk) [![etobella](https://github.com/etobella.png?size=30px)](https://github.com/etobella) | Introduce a deduplication mechanism at the sending step
 [edi_exchange_template_oca](edi_exchange_template_oca/) | 16.0.1.1.1 | [![simahawk](https://github.com/simahawk.png?size=30px)](https://github.com/simahawk) | Allows definition of exchanges via templates.
 [edi_notification_oca](edi_notification_oca/) | 16.0.1.0.0 |  | Define notification activities on exchange records.
-[edi_oca](edi_oca/) | 16.0.1.9.1 | [![simahawk](https://github.com/simahawk.png?size=30px)](https://github.com/simahawk) [![etobella](https://github.com/etobella.png?size=30px)](https://github.com/etobella) | Define backends, exchange types, exchange records, basic automation and views for handling EDI exchanges.
+[edi_oca](edi_oca/) | 16.0.1.9.3 | [![simahawk](https://github.com/simahawk.png?size=30px)](https://github.com/simahawk) [![etobella](https://github.com/etobella.png?size=30px)](https://github.com/etobella) | Define backends, exchange types, exchange records, basic automation and views for handling EDI exchanges.
 [edi_partner_oca](edi_partner_oca/) | 16.0.1.0.1 |  | EDI framework configuration and base logic for partners
 [edi_party_data_oca](edi_party_data_oca/) | 16.0.1.0.0 | [![simahawk](https://github.com/simahawk.png?size=30px)](https://github.com/simahawk) | Allow to configure and retrieve party information for EDI exchanges.
 [edi_product_multi_barcode_oca](edi_product_multi_barcode_oca/) | 16.0.1.0.0 |  | EDI framework configuration and base logic for product barcodes.
@@ -40,6 +40,7 @@ addon | version | maintainers | summary
 [edi_stock_oca](edi_stock_oca/) | 16.0.1.1.1 |  | Define EDI Configuration for Stock
 [edi_storage_oca](edi_storage_oca/) | 16.0.1.1.2 |  | Base module to allow exchanging files via storage backend (eg: SFTP).
 [edi_ubl_oca](edi_ubl_oca/) | 16.0.1.0.0 | [![simahawk](https://github.com/simahawk.png?size=30px)](https://github.com/simahawk) | Define EDI backend type for UBL.
+[edi_utm_oca](edi_utm_oca/) | 16.0.1.0.0 | [![simahawk](https://github.com/simahawk.png?size=30px)](https://github.com/simahawk) | Automatically assigns the EDI source to records created through the EDI mechanism.
 [edi_webservice_oca](edi_webservice_oca/) | 16.0.1.0.1 | [![etobella](https://github.com/etobella.png?size=30px)](https://github.com/etobella) [![simahawk](https://github.com/simahawk.png?size=30px)](https://github.com/simahawk) | Defines webservice integration from EDI Exchange records
 [edi_xml_oca](edi_xml_oca/) | 16.0.1.0.0 | [![simahawk](https://github.com/simahawk.png?size=30px)](https://github.com/simahawk) | Base module for EDI exchange using XML files.
 
