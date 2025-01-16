@@ -1,15 +1,17 @@
 # Copyright 2024 Camptocamp
 # License LGPL-3.0 or later (http://www.gnu.org/licenses/lgpl).
 
-from odoo.addons.edi_oca.tests.common import EDIBackendCommonComponentRegistryTestCase
-from odoo.addons.edi_oca.tests.fake_components import (
+from odoo.addons.edi_component_oca.tests.common import (
+    EDIBackendCommonComponentRegistryTestCase,
+)
+from odoo.addons.edi_component_oca.tests.fake_components import (
     FakeInputProcess,
     FakeOutputChecker,
     FakeOutputGenerator,
     FakeOutputSender,
 )
 
-LOGGERS = ("odoo.addons.edi_oca.models.edi_backend", "odoo.addons.queue_job.delay")
+LOGGERS = ("odoo.addons.edi_core_oca.models.edi_backend", "odoo.addons.queue_job.delay")
 
 
 class EDIDeduplicateTestCase(EDIBackendCommonComponentRegistryTestCase):
