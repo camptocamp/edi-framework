@@ -6,7 +6,7 @@
     "name": "EDI Partners",
     "summary": """
        EDI framework configuration and base logic for partners""",
-    "version": "16.0.1.0.1",
+    "version": "18.0.1.0.1",
     "license": "AGPL-3",
     "author": "Camptocamp,Odoo Community Association (OCA)",
     "website": "https://github.com/OCA/edi-framework",
