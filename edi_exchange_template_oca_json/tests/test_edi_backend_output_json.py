@@ -29,17 +29,10 @@ class TestEDIBackendOutputJsonBase(TestEDIBackendOutputBase):
                 "type_id": cls.type_out_json.id,
                 "output_type": "json",
                 "code_snippet": """
-field_list = {
-    "fields": [
-        {
-            "name": "name"
-        },
-        {
-            "name": "ref"
-        }
-    ]
+result = {
+            "name": record.name,
+            "ref": record.ref
 }
-result = field_list
                 """,
             }
         )
@@ -60,6 +53,6 @@ class TestEDIBackendOutputJson(TestEDIBackendOutputJsonBase):
 
     def test_01_generate_json(self):
         self.backend.exchange_generate(self.record_json)
-        expected = f"[{{'name': '{self.partner.name}', 'ref': '{self.partner.ref}'}}]"
+        expected = f"{{'name': '{self.partner.name}', 'ref': '{self.partner.ref}'}}"
         file_content = self.record_json._get_file_content()
         self.assertEqual(file_content.strip(), expected)

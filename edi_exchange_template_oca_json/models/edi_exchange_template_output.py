@@ -27,16 +27,18 @@ class EDIExchangeOutputTemplate(models.Model):
 
     def _render_json_values(self, exchange_record, **kw):
         """Render JSON values."""
-        parser = self._get_json_parser(exchange_record)
-        result = exchange_record.record.jsonify(parser=parser)
-        return result
-
-    def _get_json_parser(self, exchange_record):
-        """Retrieve parser to use for JSON generation."""
-        json_parser = self._evaluate_code_snippet()
-        if not json_parser:
-            json_parser = ["display_name"]
-        return json_parser
+        values = {
+            "exchange_record": exchange_record,
+            "record": exchange_record.record,
+            "backend": exchange_record.backend_id,
+            "template": self,
+            "render_edi_template": self._render_template,
+            "get_info_provider": self._get_info_provider,
+            "info": {},
+        }
+        values.update(kw)
+        values.update(self._time_utils())
+        return self._evaluate_code_snippet(**values)
 
     def _post_process_json_output(self, output):
         """Post-process JSON output."""

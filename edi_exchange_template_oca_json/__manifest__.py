@@ -9,6 +9,6 @@
     "license": "LGPL-3",
     "author": "Camptocamp, Odoo Community Association (OCA)",
     "website": "https://github.com/OCA/edi-framework",
-    "depends": ["edi_exchange_template_oca", "jsonifier"],
+    "depends": ["edi_exchange_template_oca"],
     "data": [],
 }
