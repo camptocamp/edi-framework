@@ -28,7 +28,6 @@ class TestEDIBackendOutputJsonBase(TestEDIBackendOutputBase):
                 "name": "Out JSON",
                 "backend_type_id": cls.backend.backend_type_id.id,
                 "code": "test_type_out_json",
-                "type_id": cls.type_out_json.id,
                 "output_type": "json",
                 "code_snippet": """
 result = {
@@ -38,6 +37,7 @@ result = {
                 """,
             }
         )
+        cls.type_out_json.output_template_id = cls.tmpl_out_json
         vals = {
             "model": cls.partner._name,
             "res_id": cls.partner.id,
