@@ -62,8 +62,8 @@ Authors
 Contributors
 ------------
 
-- Simone Orsi <simahawk@gmail.com>
-- John Herholz <j.longneck@gmail.com>
+-  Simone Orsi <simahawk@gmail.com>
+-  John Herholz <j.longneck@gmail.com>
 
 Maintainers
 -----------
