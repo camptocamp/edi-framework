@@ -143,8 +143,10 @@ result = {"res_ids": record.ids}
                 "output_type": "json",
                 "code_snippet": """
 result = {
+    'payload': {
             "name": record.name,
             "ref": record.ref
+    }
 }
                 """,
             }
