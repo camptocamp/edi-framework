@@ -101,8 +101,8 @@ Authors
 Contributors
 ------------
 
--  Enric Tobella <etobella@creublanca.es>
--  Simone Orsi <simone.orsi@camptocamp.com>
+- Enric Tobella <etobella@creublanca.es>
+- Simone Orsi <simone.orsi@camptocamp.com>
 
 Maintainers
 -----------
