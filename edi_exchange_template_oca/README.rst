@@ -66,6 +66,7 @@ Contributors
 -  John Herholz <j.longneck@gmail.com>
 -  Italo Lopes <italo.lopes@camptocamp.com>
 -  Hadrien HUVELLE <hadrien.huvelle@camptocamp.com>
+-  Maksym Yankin <maksym.yankin@camptocamp.com>
 
 Maintainers
 -----------
