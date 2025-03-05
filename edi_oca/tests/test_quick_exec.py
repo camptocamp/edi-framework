@@ -5,6 +5,8 @@
 import base64
 from unittest import mock
 
+from odoo.tools import mute_logger
+
 from .common import EDIBackendCommonComponentRegistryTestCase
 from .fake_components import (
     FakeInputProcess,
@@ -13,7 +15,11 @@ from .fake_components import (
     FakeOutputSender,
 )
 
-LOGGERS = ("odoo.addons.edi_oca.models.edi_backend", "odoo.addons.queue_job.delay")
+LOGGERS = (
+    "odoo.addons.edi_oca.models.edi_backend",
+    "odoo.addons.queue_job.delay",
+    "odoo.addons.edi_exchange_template_oca.models.edi_backend",
+)
 
 
 class EDIQuickExecTestCase(EDIBackendCommonComponentRegistryTestCase):
@@ -37,6 +43,7 @@ class EDIQuickExecTestCase(EDIBackendCommonComponentRegistryTestCase):
         FakeOutputChecker.reset_faked()
         FakeInputProcess.reset_faked()
 
+    @mute_logger(*LOGGERS)
     def test_quick_exec_on_create_no_call(self):
         vals = {
             "model": self.partner._name,
@@ -92,6 +99,7 @@ class EDIQuickExecTestCase(EDIBackendCommonComponentRegistryTestCase):
             record0._get_file_content(), FakeOutputGenerator._call_key(record0)
         )
 
+    @mute_logger(*LOGGERS)
     def test_quick_exec_on_create_in(self):
         self.exchange_type_in.quick_exec = True
         vals = {
@@ -104,6 +112,7 @@ class EDIQuickExecTestCase(EDIBackendCommonComponentRegistryTestCase):
         self.assertEqual(record0.edi_exchange_state, "input_processed")
         self.assertTrue(FakeInputProcess.check_called_for(record0))
 
+    @mute_logger(*LOGGERS)
     def test_quick_exec_on_retry(self):
         self.exchange_type_in.quick_exec = True
         vals = {
