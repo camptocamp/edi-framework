@@ -1,0 +1,2 @@
+- Alba Riera \<<alba.riera@creublanca.es>\>
+- Hadrien Huvelle \<<Hadrien.Huvelle@camptocamp.com>\>
