@@ -169,7 +169,7 @@ class EDIBackend(models.Model):
         relative_paths = utils.find_files(
             self.storage_id, pattern, full_input_dir_pending
         )
-        return [p.strip("/") for p in relative_paths]
+        return [os.path.basename(p.strip("/")) for p in relative_paths]
 
     def _storage_new_exchange_record_vals(self, file_name):
         return {
