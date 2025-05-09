@@ -635,7 +635,19 @@ class EDIBackend(models.Model):
             len(pending_process_records),
         )
         for rec in pending_process_records:
-            rec.with_delay().action_exchange_process()
+            if rec.parent_id and not rec.parent_id.edi_exchange_state == "processed ":
+                job = rec.env["queue.job"].search(
+                    [
+                        ("func_string", "like", str(rec)),
+                        ("state", "in", "pending,started"),
+                    ]
+                )
+                if job:
+                    # load the job
+                    # whatever...
+                    job.on_done(rec.delayable().action_exchange_process())
+            else:
+                rec.with_delay().action_exchange_process()
 
     def _input_pending_records_domain(self, record_ids=None):
         domain = [
