@@ -9,21 +9,3 @@ class StockPicking(models.Model):
     _inherit = ["stock.picking", "edi.exchange.consumer.mixin"]
 
     edi_disable_auto = fields.Boolean()
-
-    def action_confirm(self):
-        result = super().action_confirm()
-        if self:
-            self._event("on_confirm_picking").notify(self)
-        return result
-
-    def _action_done(self):
-        result = super()._action_done()
-        if self:
-            self._event("on_validate_picking").notify(self)
-        return result
-
-    def action_cancel(self):
-        result = super().action_cancel()
-        if self:
-            self._event("on_cancel_picking").notify(self)
-        return result
