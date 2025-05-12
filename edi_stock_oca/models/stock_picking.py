@@ -1,14 +1,12 @@
 # Copyright 2022 OCA
 # License AGPL-3.0 or later (http://www.gnu.org/licenses/agpl).
 
-from odoo import fields, models
+from odoo import models
 
 
 class StockPicking(models.Model):
     _name = "stock.picking"
     _inherit = ["stock.picking", "edi.exchange.consumer.mixin"]
-
-    edi_disable_auto = fields.Boolean()
 
     def action_confirm(self):
         result = super().action_confirm()
