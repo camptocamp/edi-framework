@@ -2,6 +2,7 @@
 # Copyright 2024 Dixmit
 # License AGPL-3.0 or later (http://www.gnu.org/licenses/agpl).
 
+import json
 import logging
 
 from openupgradelib import openupgrade
@@ -29,15 +30,13 @@ def _get_storage_vals(code, record):
     if record["backend_type"] == "sftp":
         protocol = "sftp"
         options = {
-            "host": record["sftp_host"],
-            "ssh_kwargs": {
-                "port": record["sftp_port"],
-            },
+            "host": record["sftp_server"],
+            "port": record["sftp_port"],
         }
         if record["sftp_auth_method"] == "pwd":
-            options["ssh_kwargs"].update(
+            options.update(
                 {
-                    "username": record["sftp_user"],
+                    "username": record["sftp_login"],
                     "password": record["sftp_password"],
                 }
             )
@@ -46,7 +45,7 @@ def _get_storage_vals(code, record):
                 "SSH Key requires a PrivateKey file, but we are "
                 "providing a string. Please check the migration."
             )
-            options["ssh_kwargs"].update(
+            options.update(
                 {
                     "pkey": record["sftp_private_key"],
                 }
@@ -62,8 +61,8 @@ def _get_storage_vals(code, record):
         "name": record["name"],
         "code": code,
         "protocol": protocol,
-        "options": options,
-        "directory_path": record["directory_path"],
+        "options": json.dumps(options, default=str),
+        "directory_path": record.get("directory_path", "."),
     }
 
 
@@ -85,6 +84,9 @@ def migrate(env, version):
     fs_storage = env["fs.storage"]
 
     for record in storage_backend_records:
+        defaults = json.loads(record.pop("server_env_defaults"))
+        for key in defaults:
+            record[key.split("_env_default")[0]] = defaults[key]
         code = slugify(record.get("name")).replace("-", "_")
         if fs_storage.search([("code", "=", code)]):
             code = "%s_%d" % (code, record.id)
