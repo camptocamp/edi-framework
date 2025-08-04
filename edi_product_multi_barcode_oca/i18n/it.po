@@ -62,6 +62,11 @@ msgid "Exchange Record Count"
 msgstr "Conteggio record di scambio"
 
 #. module: edi_product_multi_barcode_oca
+#: model:ir.model.fields,field_description:edi_product_multi_barcode_oca.field_product_barcode__exchange_related_record_ids
+msgid "Exchange Related Record"
+msgstr ""
+
+#. module: edi_product_multi_barcode_oca
 #: model:ir.model,name:edi_product_multi_barcode_oca.model_product_barcode
 msgid "Individual item in a product's barcode list"
 msgstr "Singolo oggetto nella lista codici a barre di un prodotto"
