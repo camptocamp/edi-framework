@@ -83,6 +83,13 @@ msgid "Exchange Record Count"
 msgstr ""
 
 #. module: edi_product_oca
+#: model:ir.model.fields,field_description:edi_product_oca.field_product_packaging__exchange_related_record_ids
+#: model:ir.model.fields,field_description:edi_product_oca.field_product_product__exchange_related_record_ids
+#: model:ir.model.fields,field_description:edi_product_oca.field_product_template__exchange_related_record_ids
+msgid "Exchange Related Record"
+msgstr ""
+
+#. module: edi_product_oca
 #: model:ir.model,name:edi_product_oca.model_product_template
 msgid "Product"
 msgstr ""
