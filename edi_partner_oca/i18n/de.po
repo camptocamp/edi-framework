@@ -72,6 +72,11 @@ msgid "Exchange Record Count"
 msgstr "Anzahl Austauschdatensätze"
 
 #. module: edi_partner_oca
+#: model:ir.model.fields,field_description:edi_partner_oca.field_res_partner__exchange_related_record_ids
+msgid "Exchange Related Record"
+msgstr ""
+
+#. module: edi_partner_oca
 #: model:ir.model.fields,help:edi_partner_oca.field_res_partner__edi_disable_auto
 msgid "When marked, EDI automatic processing will be avoided"
 msgstr "Wenn markiert, wird die automatische EDI-Verarbeitung verhindert"
