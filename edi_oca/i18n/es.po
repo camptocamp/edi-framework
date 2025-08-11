@@ -6,7 +6,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Odoo Server 16.0\n"
 "Report-Msgid-Bugs-To: \n"
-"PO-Revision-Date: 2025-08-08 14:25+0000\n"
+"PO-Revision-Date: 2025-08-11 16:25+0000\n"
 "Last-Translator: isretamales <ivana.retamales@factorlibre.com>\n"
 "Language-Team: none\n"
 "Language: es\n"
@@ -309,26 +309,25 @@ msgstr "Tipo de backend"
 #: code:addons/edi_oca/models/edi_exchange_record.py:0
 #, python-format
 msgid "Backend must match with exchange type's backend!"
-msgstr ""
-"El sistema externo debe coincidir con el definido en el tipo de intercambio"
+msgstr "¡El backend debe coincidir con el definido en el tipo de intercambio!"
 
 #. module: edi_oca
 #. odoo-python
 #: code:addons/edi_oca/models/edi_exchange_type.py:0
 #, python-format
 msgid "Backend should respect backend type!"
-msgstr "El sistema externo debe corresponder con el tipo de sistema externo"
+msgstr "¡El backend debe corresponder con el tipo de sistema externo!"
 
 #. module: edi_oca
 #: model:ir.model.fields,field_description:edi_oca.field_edi_exchange_record_create_wiz__backend_type_id
 #: model:ir.model.fields,field_description:edi_oca.field_edi_exchange_type__backend_type_id
 msgid "Backend type"
-msgstr "Tipo de sistema externo"
+msgstr "Tipo de backend"
 
 #. module: edi_oca
 #: model:ir.model.constraint,message:edi_oca.constraint_edi_backend_type_uniq_code
 msgid "Backend type code must be unique!"
-msgstr ""
+msgstr "¡El código de tipo de backend debe ser único!"
 
 #. module: edi_oca
 #. odoo-python
@@ -336,22 +335,22 @@ msgstr ""
 #: code:addons/edi_oca/models/edi_exchange_record.py:0
 #, python-format
 msgid "Backend type must match with exchange type's backend type!"
-msgstr ""
+msgstr "¡El tipo de backend debe coincidir con el del tipo de intercambio!"
 
 #. module: edi_oca
 #: model:ir.ui.menu,name:edi_oca.menu_edi_backend_type
 msgid "Backend types"
-msgstr ""
+msgstr "Tipos de backend"
 
 #. module: edi_oca
 #: model:ir.ui.menu,name:edi_oca.menu_edi_backend
 msgid "Backends"
-msgstr ""
+msgstr "Backends"
 
 #. module: edi_oca
 #: model_terms:ir.ui.view,arch_db:edi_oca.edi_exchange_record_create_form_view
 msgid "Cancel"
-msgstr ""
+msgstr "Cancelar"
 
 #. module: edi_oca
 #: model:ir.model.fields,field_description:edi_oca.field_edi_backend__backend_type_code
@@ -360,38 +359,38 @@ msgstr ""
 #: model:ir.model.fields,field_description:edi_oca.field_edi_configuration_trigger__code
 #: model:ir.model.fields,field_description:edi_oca.field_edi_exchange_type__code
 msgid "Code"
-msgstr ""
+msgstr "Código"
 
 #. module: edi_oca
 #: model:ir.model.constraint,message:edi_oca.constraint_edi_configuration_trigger_code_uniq
 msgid "Code must be unique"
-msgstr ""
+msgstr "El código debe ser único"
 
 #. module: edi_oca
 #: model:ir.model.fields,field_description:edi_oca.field_edi_backend__company_id
 #: model:ir.model.fields,field_description:edi_oca.field_edi_exchange_record__company_id
 msgid "Company"
-msgstr ""
+msgstr "Compañía"
 
 #. module: edi_oca
 #: model:ir.ui.menu,name:edi_oca.menu_edi_config
 msgid "Config"
-msgstr ""
+msgstr "Configuración"
 
 #. module: edi_oca
 #: model:ir.ui.menu,name:edi_oca.menu_edi_configuration
 msgid "Configurations"
-msgstr ""
+msgstr "Configuraciones"
 
 #. module: edi_oca
 #: model:ir.model,name:edi_oca.model_edi_exchange_record_create_wiz
 msgid "Create an Exchange Record"
-msgstr ""
+msgstr "Crear un registro de intercambio"
 
 #. module: edi_oca
 #: model_terms:ir.ui.view,arch_db:edi_oca.edi_exchange_record_view_search
 msgid "Create date"
-msgstr ""
+msgstr "Crear fecha"
 
 #. module: edi_oca
 #: model:ir.model.fields,field_description:edi_oca.field_edi_backend__create_uid
@@ -404,12 +403,12 @@ msgstr ""
 #: model:ir.model.fields,field_description:edi_oca.field_edi_exchange_type__create_uid
 #: model:ir.model.fields,field_description:edi_oca.field_edi_exchange_type_rule__create_uid
 msgid "Created by"
-msgstr ""
+msgstr "Creado por"
 
 #. module: edi_oca
 #: model_terms:ir.ui.view,arch_db:edi_oca.edi_exchange_record_view_search
 msgid "Created last 7 days"
-msgstr ""
+msgstr "Creado en los últimos 7 días"
 
 #. module: edi_oca
 #: model:ir.model.fields,field_description:edi_oca.field_edi_backend__create_date
@@ -422,17 +421,17 @@ msgstr ""
 #: model:ir.model.fields,field_description:edi_oca.field_edi_exchange_type__create_date
 #: model:ir.model.fields,field_description:edi_oca.field_edi_exchange_type_rule__create_date
 msgid "Created on"
-msgstr ""
+msgstr "Creado el"
 
 #. module: edi_oca
 #: model_terms:ir.ui.view,arch_db:edi_oca.edi_exchange_record_view_search
 msgid "Created today"
-msgstr ""
+msgstr "Creado hoy"
 
 #. module: edi_oca
 #: model:ir.model.fields.selection,name:edi_oca.selection__edi_exchange_type_rule__kind__custom
 msgid "Custom"
-msgstr ""
+msgstr "Personalizado"
 
 #. module: edi_oca
 #: model:ir.model.fields,field_description:edi_oca.field_edi_exchange_type__encoding_in_error_handler
