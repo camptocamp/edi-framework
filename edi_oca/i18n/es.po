@@ -6,7 +6,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Odoo Server 16.0\n"
 "Report-Msgid-Bugs-To: \n"
-"PO-Revision-Date: 2025-08-12 12:08+0000\n"
+"PO-Revision-Date: 2025-08-14 13:25+0000\n"
 "Last-Translator: isretamales <ivana.retamales@factorlibre.com>\n"
 "Language-Team: none\n"
 "Language: es\n"
@@ -493,7 +493,7 @@ msgstr ""
 #: model:ir.model,name:edi_oca.model_edi_backend
 #: model_terms:ir.ui.view,arch_db:edi_oca.edi_backend_view_search
 msgid "EDI Backend"
-msgstr ""
+msgstr "Backend EDI"
 
 #. module: edi_oca
 #: model:ir.actions.act_window,name:edi_oca.act_open_edi_backend_type_view
