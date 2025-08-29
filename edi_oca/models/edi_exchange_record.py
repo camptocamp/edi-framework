@@ -45,6 +45,7 @@ class EDIExchangeRecord(models.Model):
         compute="_compute_record",
         inverse="_inverse_record",
         store=True,
+        copy=False,
     )
     res_id = fields.Many2oneReference(
         string="Record",
