@@ -6,8 +6,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Odoo Server 16.0\n"
 "Report-Msgid-Bugs-To: \n"
-"PO-Revision-Date: 2025-09-18 09:42+0000\n"
-"Last-Translator: Bastian Günther <mail@bastian-guenther.de>\n"
+"PO-Revision-Date: 2025-09-22 11:43+0000\n"
+"Last-Translator: davidbeckercbl <becker@cbl-computer.de>\n"
 "Language-Team: none\n"
 "Language: de\n"
 "MIME-Version: 1.0\n"
@@ -1523,22 +1523,22 @@ msgstr "Gesendet und verarbeitet"
 #: model:ir.model.fields,help:edi_oca.field_edi_exchange_record__ack_received_on
 #: model:ir.model.fields,help:edi_oca.field_edi_exchange_record__exchanged_on
 msgid "Sent or received on this date."
-msgstr ""
+msgstr "Zu diesem Zeitpunkt wurden Daten gesendet oder empfangen."
 
 #. module: edi_oca
 #: model_terms:ir.ui.view,arch_db:edi_oca.edi_exchange_record_view_search
 msgid "Show all records created in the last 7 days"
-msgstr ""
+msgstr "Zeige alle Datensätze, die in den letzten 7 Tagen angelegt wurden"
 
 #. module: edi_oca
 #: model_terms:ir.ui.view,arch_db:edi_oca.edi_exchange_record_view_search
 msgid "Show all records created today"
-msgstr ""
+msgstr "Zeige alle heute angelegten Datensätze"
 
 #. module: edi_oca
 #: model_terms:ir.ui.view,arch_db:edi_oca.edi_exchange_type_rule_view_form
 msgid "Snippet"
-msgstr ""
+msgstr "Code-Schnipsel"
 
 #. module: edi_oca
 #: model:ir.model.fields,field_description:edi_oca.field_edi_configuration__snippet_before_do
@@ -1567,17 +1567,17 @@ msgstr ""
 #. module: edi_oca
 #: model_terms:ir.ui.view,arch_db:edi_oca.edi_exchange_record_view_search
 msgid "State"
-msgstr ""
+msgstr "Status"
 
 #. module: edi_oca
 #: model_terms:ir.ui.view,arch_db:edi_oca.edi_exchange_record_view_form
 msgid "Status"
-msgstr ""
+msgstr "Status"
 
 #. module: edi_oca
 #: model_terms:ir.ui.view,arch_db:edi_oca.edi_exchange_record_view_search
 msgid "Successful"
-msgstr ""
+msgstr "Erfolgreich"
 
 #. module: edi_oca
 #: model:ir.model.constraint,message:edi_oca.constraint_edi_exchange_type_code_uniq
@@ -1587,17 +1587,18 @@ msgstr "Der Schlüssel muss pro Backend eindeutig sein"
 #. module: edi_oca
 #: model:ir.model.constraint,message:edi_oca.constraint_edi_exchange_record_external_identifier_uniq
 msgid "The external_identifier must be unique for a type and a backend."
-msgstr ""
+msgstr "Die externe Identifikation muss pro Typ und Backend eindeutig sein."
 
 #. module: edi_oca
 #: model:ir.model.constraint,message:edi_oca.constraint_edi_exchange_record_identifier_uniq
 msgid "The identifier must be unique."
-msgstr ""
+msgstr "Die Identifikation muss eindeutig sein."
 
 #. module: edi_oca
 #: model:ir.model.fields,help:edi_oca.field_edi_exchange_record__retryable
 msgid "The record state can be rolled back manually in case of failure."
 msgstr ""
+"Der Status des Datensatzes kann im Fehlerfall manuell zurückgesetzt werden."
 
 #. module: edi_oca
 #: model:ir.model.fields,field_description:edi_oca.field_edi_configuration__trigger_id
