@@ -1,7 +1,3 @@
-.. image:: https://odoo-community.org/readme-banner-image
-   :target: https://odoo-community.org/get-involved?utm_source=readme
-   :alt: Odoo Community Association
-
 ===
 EDI
 ===
@@ -17,7 +13,7 @@ EDI
 .. |badge1| image:: https://img.shields.io/badge/maturity-Beta-yellow.png
     :target: https://odoo-community.org/page/development-status
     :alt: Beta
-.. |badge2| image:: https://img.shields.io/badge/license-LGPL--3-blue.png
+.. |badge2| image:: https://img.shields.io/badge/licence-LGPL--3-blue.png
     :target: http://www.gnu.org/licenses/lgpl-3.0-standalone.html
     :alt: License: LGPL-3
 .. |badge3| image:: https://img.shields.io/badge/github-OCA%2Fedi--framework-lightgray.png?logo=github
@@ -59,23 +55,23 @@ proper implementations of components.
 
 In order to define a new Exchange Record, we need to configure:
 
-- Backend Type
-- Exchange Type
-- Backend
-- Components
+-  Backend Type
+-  Exchange Type
+-  Backend
+-  Components
 
 Jobs
 ----
 
-- (1) **Internal User**: might be an EDI user without even knowing about
-  it, triggering EDI flows by some of his actions on business records;
-  does not need access to related queue jobs.
+-  (1) **Internal User**: might be an EDI user without even knowing
+   about it, triggering EDI flows by some of his actions on business
+   records; does not need access to related queue jobs.
 
-- (2) **EDI User**: more conscious EDI user that might sometimes need to
-  debug things a bit further and thus needs access to related queue
-  jobs.
+-  (2) **EDI User**: more conscious EDI user that might sometimes need
+   to debug things a bit further and thus needs access to related queue
+   jobs.
 
-- (3) **EDI Manager**: full configuration access.
+-  (3) **EDI Manager**: full configuration access.
 
 Component definition
 --------------------
@@ -83,10 +79,10 @@ Component definition
 The component usage must be defined like edi.{direction}.{kind}.{code}
 where:
 
-- direction is output or input
-- kind can be: generate, send, check, process, receive
-- code is the {backend type code} or {backend type code}.{exchange type
-  code}
+-  direction is output or input
+-  kind can be: generate, send, check, process, receive
+-  code is the {backend type code} or {backend type code}.{exchange type
+   code}
 
 User EDI generation
 -------------------
@@ -136,11 +132,11 @@ Odoo to another system.
 
 The flow of an output record should be:
 
-- Creation
-- Generation of data
-- Validation of data
-- Sending data
-- Validation of data processed properly by the other party
+-  Creation
+-  Generation of data
+-  Validation of data
+-  Sending data
+-  Validation of data processed properly by the other party
 
 Input Exchange records
 ----------------------
@@ -150,10 +146,10 @@ system to odoo.
 
 The flow of an input record should be:
 
-- Creation
-- Reception of data
-- Checking data
-- Processing data
+-  Creation
+-  Reception of data
+-  Checking data
+-  Processing data
 
 Known issues / Roadmap
 ======================
@@ -186,9 +182,10 @@ Authors
 Contributors
 ------------
 
-- Simone Orsi <simahawk@gmail.com>
-- Enric Tobella <etobella@creublanca.es>
-- Manuel Regidor <manuel.regidor@sygel.es>
+-  Simone Orsi <simahawk@gmail.com>
+-  Enric Tobella <etobella@creublanca.es>
+-  Manuel Regidor <manuel.regidor@sygel.es>
+-  Jordi Masvidal <jordi.masvidal@forgeflow.com>
 
 Maintainers
 -----------
