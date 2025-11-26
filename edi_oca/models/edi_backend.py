@@ -472,6 +472,7 @@ class EDIBackend(models.Model):
             ("type_id.direction", "=", "output"),
             ("edi_exchange_state", "=", "new"),
             ("exchange_file", "=", False),
+            ("type_id.quick_exec", "=", False),
         ]
         if record_ids:
             domain.append(("id", "in", record_ids))
