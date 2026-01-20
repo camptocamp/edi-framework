@@ -374,19 +374,17 @@ ul.auto-toc {
 !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
 !! source digest: sha256:8ab40ab13f4a26ea0ba04ff19e53af88e490d1b2e783699454ae6255422e00c3
 !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!! -->
-<p><a class="reference external image-reference" href="https://odoo-community.org/page/development-status"><img alt="Beta" src="https://img.shields.io/badge/maturity-Beta-yellow.png" /></a> <a class="reference external image-reference" href="http://www.gnu.org/licenses/lgpl-3.0-standalone.html"><img alt="License: LGPL-3" src="https://img.shields.io/badge/license-LGPL--3-blue.png" /></a> <a class="reference external image-reference" href="https://github.com/OCA/edi-framework/tree/19.0/edi_purchase_oca"><img alt="OCA/edi-framework" src="https://img.shields.io/badge/github-OCA%2Fedi--framework-lightgray.png?logo=github" /></a> <a class="reference external image-reference" href="https://translation.odoo-community.org/projects/edi-framework-19-0/edi-framework-19-0-edi_purchase_oca"><img alt="Translate me on Weblate" src="https://img.shields.io/badge/weblate-Translate%20me-F47D42.png" /></a> <a class="reference external image-reference" href="https://runboat.odoo-community.org/builds?repo=OCA/edi-framework&amp;target_branch=19.0"><img alt="Try me on Runboat" src="https://img.shields.io/badge/runboat-Try%20me-875A7B.png" /></a></p>
-<p>This module intends to create a base to be extended by local edi rules
-for purchase.</p>
-<p>In order to add a new integration, you need to create a listener:</p>
-<pre class="code python literal-block">
-<span class="k">class</span><span class="w"> </span><span class="nc">MyEventListener</span><span class="p">(</span><span class="n">Component</span><span class="p">):</span><span class="w">
-</span>    <span class="n">_name</span> <span class="o">=</span> <span class="s2">&quot;purchase.order.event.listener.demo&quot;</span><span class="w">
-</span>    <span class="n">_inherit</span> <span class="o">=</span> <span class="s2">&quot;base.event.listener&quot;</span><span class="w">
-</span>    <span class="n">_apply_on</span> <span class="o">=</span> <span class="p">[</span><span class="s2">&quot;purchase.order&quot;</span><span class="p">]</span><span class="w">
-
-</span>    <span class="k">def</span><span class="w"> </span><span class="nf">on_button_confirm_purchase_order</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">move</span><span class="p">):</span><span class="w">
-        </span><span class="sd">&quot;&quot;&quot;Add your code here&quot;&quot;&quot;</span>
-</pre>
+<p><a class="reference external image-reference" href="https://odoo-community.org/page/development-status"><img alt="Alpha" src="https://img.shields.io/badge/maturity-Alpha-red.png" /></a> <a class="reference external image-reference" href="http://www.gnu.org/licenses/lgpl-3.0-standalone.html"><img alt="License: LGPL-3" src="https://img.shields.io/badge/license-LGPL--3-blue.png" /></a> <a class="reference external image-reference" href="https://github.com/OCA/edi-framework/tree/19.0/edi_purchase_oca"><img alt="OCA/edi-framework" src="https://img.shields.io/badge/github-OCA%2Fedi--framework-lightgray.png?logo=github" /></a> <a class="reference external image-reference" href="https://translation.odoo-community.org/projects/edi-framework-19-0/edi-framework-19-0-edi_purchase_oca"><img alt="Translate me on Weblate" src="https://img.shields.io/badge/weblate-Translate%20me-F47D42.png" /></a> <a class="reference external image-reference" href="https://runboat.odoo-community.org/builds?repo=OCA/edi-framework&amp;target_branch=19.0"><img alt="Try me on Runboat" src="https://img.shields.io/badge/runboat-Try%20me-875A7B.png" /></a></p>
+<p>Handle purchase orders via EDI.</p>
+<p>This is a base module to plug purchase processes with the EDI framework.</p>
+<p>To handle inbound/outbound purchase orders, you need to create your own
+integration modules on top of this base module.</p>
+<div class="admonition important">
+<p class="first admonition-title">Important</p>
+<p class="last">This is an alpha version, the data model and design can change at any time without warning.
+Only for development or testing purpose, do not use in production.
+<a class="reference external" href="https://odoo-community.org/page/development-status">More details on development status</a></p>
+</div>
 <p><strong>Table of contents</strong></p>
 <div class="contents local topic" id="contents">
 <ul class="simple">

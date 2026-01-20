@@ -14,9 +14,9 @@ EDI Purchase
    !! source digest: sha256:8ab40ab13f4a26ea0ba04ff19e53af88e490d1b2e783699454ae6255422e00c3
    !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
 
-.. |badge1| image:: https://img.shields.io/badge/maturity-Beta-yellow.png
+.. |badge1| image:: https://img.shields.io/badge/maturity-Alpha-red.png
     :target: https://odoo-community.org/page/development-status
-    :alt: Beta
+    :alt: Alpha
 .. |badge2| image:: https://img.shields.io/badge/license-LGPL--3-blue.png
     :target: http://www.gnu.org/licenses/lgpl-3.0-standalone.html
     :alt: License: LGPL-3
@@ -32,20 +32,17 @@ EDI Purchase
 
 |badge1| |badge2| |badge3| |badge4| |badge5|
 
-This module intends to create a base to be extended by local edi rules
-for purchase.
+Handle purchase orders via EDI.
 
-In order to add a new integration, you need to create a listener:
+This is a base module to plug purchase processes with the EDI framework.
 
-.. code:: python
+To handle inbound/outbound purchase orders, you need to create your own
+integration modules on top of this base module.
 
-   class MyEventListener(Component):
-       _name = "purchase.order.event.listener.demo"
-       _inherit = "base.event.listener"
-       _apply_on = ["purchase.order"]
-
-       def on_button_confirm_purchase_order(self, move):
-           """Add your code here"""
+.. IMPORTANT::
+   This is an alpha version, the data model and design can change at any time without warning.
+   Only for development or testing purpose, do not use in production.
+   `More details on development status <https://odoo-community.org/page/development-status>`_
 
 **Table of contents**
 
@@ -74,10 +71,9 @@ Authors
 Contributors
 ------------
 
--  Lois Rilo lois.rilo@forgeflow.com
--  Simone Orsi simone.orsi@camptocamp.com
-
--  Phan Hong Phuc <phucph@trobz.com>
+- Lois Rilo lois.rilo@forgeflow.com
+- Simone Orsi simone.orsi@camptocamp.com
+- Phan Hong Phuc <phucph@trobz.com>
 
 Maintainers
 -----------

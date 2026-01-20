@@ -1,14 +1,6 @@
-This module intends to create a base to be extended by local edi rules
-for purchase.
+Handle purchase orders via EDI.
 
-In order to add a new integration, you need to create a listener:
+This is a base module to plug purchase processes with the EDI framework.
 
-``` python
-class MyEventListener(Component):
-    _name = "purchase.order.event.listener.demo"
-    _inherit = "base.event.listener"
-    _apply_on = ["purchase.order"]
-
-    def on_button_confirm_purchase_order(self, move):
-        """Add your code here"""
-```
+To handle inbound/outbound purchase orders, you need to create your own
+integration modules on top of this base module.

@@ -1,8 +1,6 @@
 # Copyright 2022 ForgeFlow S.L. (https://www.forgeflow.com)
 # License LGPL-3.0 or later (http://www.gnu.org/licenses/lgpl).
 
-from contextlib import contextmanager
-
 from odoo import models
 
 
@@ -13,20 +11,17 @@ class PurchaseOrder(models.Model):
         "edi.exchange.consumer.mixin",
     ]
 
-    def button_confirm(self):
-        with self._edi_purchase_order_state_change_trigger():
-            result = super().button_confirm()
-        return result
+    def _edi_config_field_relation(self):
+        return self.partner_id.edi_purchase_conf_ids
 
-    def button_cancel(self):
-        with self._edi_purchase_order_state_change_trigger():
-            result = super().button_cancel()
-        return result
-
-    @contextmanager
-    def _edi_purchase_order_state_change_trigger(self):
-        for order in self:
-            order._event("on_edi_purchase_order_state_change").notify(
-                order, state=order.state
-            )
-        yield
+    # edi_record_metadata api
+    def _edi_get_metadata_to_store(self, orig_vals):
+        data = super()._edi_get_metadata_to_store(orig_vals)
+        line_vals_by_edi_id = {}
+        for line_vals in orig_vals.get("order_line", []):
+            vals = line_vals[-1]
+            edi_id = vals.get("edi_id")
+            if edi_id:
+                line_vals_by_edi_id[edi_id] = vals
+        data.update({"orig_values": {"lines": line_vals_by_edi_id}})
+        return data
