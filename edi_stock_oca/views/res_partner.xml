@@ -9,7 +9,11 @@
         <field name="arch" type="xml">
             <!-- TODO: Move this conf inside `edi` page from edi_oca. -->
             <group name="inventory" position="after">
-                <group name="edi_configuration" string="EDI Configuration" />
+                <group
+                    name="edi_configuration"
+                    string="EDI Configuration"
+                    colspan="2"
+                />
             </group>
         </field>
     </record>
