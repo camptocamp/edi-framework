@@ -5,7 +5,7 @@
     "name": "Edi Stock Oca",
     "summary": """
        Define EDI Configuration for Stock""",
-    "version": "16.0.1.1.1",
+    "version": "16.0.1.1.2",
     "license": "AGPL-3",
     "author": "Odoo Community Association,Odoo Community Association (OCA)",
     "website": "https://github.com/OCA/edi-framework",
