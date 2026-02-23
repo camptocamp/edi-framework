@@ -154,7 +154,8 @@ class EDIBackend(models.Model):
                         "exchange_error_traceback": traceback,
                     }
                 )
-        exchange_record.notify_action_complete("generate", message=message)
+        if exchange_record.edi_exchange_state == "output_pending":
+            exchange_record.notify_action_complete("generate", message=message)
         return message
 
     # TODO: unify to all other checkes that return something
@@ -270,7 +271,11 @@ class EDIBackend(models.Model):
                     "exchanged_on": fields.Datetime.now(),
                 }
             )
-        exchange_record.notify_action_complete("send", message=message)
+        if exchange_record.edi_exchange_state in [
+            "output_sent",
+            "output_sent_and_processed",
+        ]:
+            exchange_record.notify_action_complete("send", message=message)
         return res
 
     def _swallable_exceptions(self):
@@ -478,7 +483,8 @@ class EDIBackend(models.Model):
                 exchange_record._notify_error("process_ko")
             elif state == "input_processed":
                 exchange_record._notify_done()
-        exchange_record.notify_action_complete("process", message=message)
+        if exchange_record.edi_exchange_state == "input_processed":
+            exchange_record.notify_action_complete("process", message=message)
         return res
 
     def _exchange_process(self, exchange_record):
@@ -534,7 +540,8 @@ class EDIBackend(models.Model):
                     "exchanged_on": fields.Datetime.now(),
                 }
             )
-        exchange_record.notify_action_complete("receive", message=message)
+        if exchange_record.edi_exchange_state == "input_processed":
+            exchange_record.notify_action_complete("receive", message=message)
         return res
 
     def _exchange_receive_check(self, exchange_record):
