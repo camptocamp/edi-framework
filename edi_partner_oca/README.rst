@@ -59,6 +59,7 @@ Contributors
 
 - Jacques-Etienne Baudoux <je@bcim.be>
 - Duong (Tran Quoc) <duongtq@trobz.com>
+- Ricardo Almeida Soares <ricardo.almeidasoares@camptocamp.com>
 
 Other credits
 -------------
