@@ -64,11 +64,6 @@ Contributors
 -  Duong (Tran Quoc) <duontq@troz.com>
 -  Simone Orsi <simone.orsi@camptocamp.com>
 
-Other credits
--------------
-
-The creation of this module was financially supported by Camptocamp.
-
 Maintainers
 -----------
 
