@@ -1,8 +1,8 @@
 # Copyright 2021 Camptocamp SA
 # @author: Simone Orsi <simone.orsi@camptocamp.com>
 # License LGPL-3.0 or later (http://www.gnu.org/licenses/lgpl).
-
-from odoo import _, api, exceptions, fields, models
+from odoo import api, exceptions, fields, models
+from odoo.fields import Domain
 
 
 class EDIBackend(models.Model):
@@ -17,24 +17,29 @@ class EDIBackend(models.Model):
 
     @api.depends("endpoint_ids.active")
     def _compute_endpoints_count(self):
-        data = self.env["edi.endpoint"].read_group(
-            [("backend_id", "in", self.ids), ("active", "=", True)],
-            ["backend_id"],
-            ["backend_id"],
+        data = self.env["edi.endpoint"]._read_group(
+            domain=Domain("backend_id", "in", self.ids) & Domain("active", "=", True),
+            groupby=["backend_id"],
+            aggregates=["__count"],
         )
-        by_backend_id = {x["backend_id"][0]: x["backend_id_count"] for x in data}
+        by_backend_id = {backend.id: count for backend, count in data}
         for record in self:
-            record.endpoints_count = by_backend_id.get(record.id)
+            record.endpoints_count = by_backend_id.get(record.id, 0)
 
     def action_manage_endpoints(self):
         xmlid = "edi_endpoint_oca.edi_endpoint_act_window"
         action = self.env["ir.actions.act_window"]._for_xml_id(xmlid)
-        action["domain"] = [
-            ("backend_type_id", "=", self.backend_type_id.id),
-            "|",
-            ("backend_id", "=", False),
-            ("backend_id", "=", self.id),
-        ]
+        action["domain"] = Domain.AND(
+            [
+                Domain("backend_type_id", "=", self.backend_type_id.id),
+                Domain.OR(
+                    [
+                        Domain("backend_id", "=", False),
+                        Domain("backend_id", "=", self.id),
+                    ]
+                ),
+            ]
+        )
         action["context"] = {
             "default_backend_id": self.id,
             "default_backend_type_id": self.backend_type_id.id,
@@ -52,7 +57,8 @@ class EDIBackend(models.Model):
             raise exceptions.UserError(self._check_archive_error_msg(to_check))
 
     def _check_archive_error_msg(self, backends):
-        return _(
+        return self.env._(
             "The following backend(s) have endpoints attached. "
-            "Please archive them before:\n\n%s"
-        ) % "\n- ".join([x.name for x in backends])
+            "Please archive them before:\n\n%s",
+            "\n- ".join([x.name for x in backends]),
+        )
