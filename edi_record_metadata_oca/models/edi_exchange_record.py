@@ -25,8 +25,8 @@ class EDIExchangeRecord(models.Model):
         for rec in self:
             rec.metadata_display = json.dumps(rec.metadata, sort_keys=True, indent=4)
 
-    def set_metadata(self, data):
+    def set_edi_metadata(self, data):
         self.metadata = data
 
-    def get_metadata(self):
+    def get_edi_metadata(self):
         return self.metadata
