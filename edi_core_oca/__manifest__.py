@@ -50,6 +50,5 @@
             "edi_core_oca/static/tests/**/*",
         ],
     },
-    "demo": ["demo/edi_backend_demo.xml"],
     "installable": True,
 }
