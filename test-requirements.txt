@@ -2,3 +2,6 @@ odoo-addon-component @ git+https://github.com/OCA/connector.git@refs/pull/525/he
 odoo-addon-component_event @ git+https://github.com/OCA/connector.git@refs/pull/526/head#subdirectory=component_event
 odoo-addon-endpoint @ git+https://github.com/OCA/web-api.git@refs/pull/127/head#subdirectory=endpoint
 odoo-addon-rpc_helper @ git+https://github.com/OCA/server-tools.git@refs/pull/3539/head#subdirectory=rpc_helper
+odoo-addon-edi_component_oca @ git+https://github.com/OCA/edi-framework.git@refs/pull/245/head#subdirectory=edi_component_oca
+odoo-addon-webservice @ git+https://github.com/OCA/web-api.git@refs/pull/128/head#subdirectory=webservice
+odoo-addon-webservice_server_env @ git+https://github.com/OCA/web-api.git@refs/pull/128/head#subdirectory=webservice_server_env
