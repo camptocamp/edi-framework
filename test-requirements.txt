@@ -1,0 +1,2 @@
+odoo-addon-component @ git+https://github.com/OCA/connector.git@refs/pull/525/head#subdirectory=component
+odoo-addon-component_event @ git+https://github.com/OCA/connector.git@refs/pull/526/head#subdirectory=component_event
