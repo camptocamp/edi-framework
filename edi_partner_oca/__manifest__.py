@@ -12,7 +12,7 @@
     "website": "https://github.com/OCA/edi-framework",
     "depends": [
         "contacts",
-        "edi_endpoint_oca",
+        "edi_core_oca",
     ],
     "data": ["views/partner_views.xml"],
 }
