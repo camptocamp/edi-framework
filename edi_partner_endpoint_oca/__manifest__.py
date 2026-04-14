@@ -14,5 +14,8 @@
         "edi_partner_oca",
         "edi_endpoint_oca",
     ],
+    "data": [
+        "views/partner_views.xml",
+    ],
     "auto_install": True,
 }
