@@ -7,16 +7,19 @@ import unittest
 
 from odoo.tests.common import HttpCase
 
-from .common import CommonEDIEndpoint
+from .common import EDIEndpointTestMixin
 
 
 @unittest.skipIf(os.getenv("SKIP_HTTP_CASE"), "EDIEndpointHttpCase skipped")
-class EDIEndpointHttpCase(HttpCase, CommonEDIEndpoint):
+class EDIEndpointHttpCase(HttpCase, EDIEndpointTestMixin):
     @classmethod
     def setUpClass(cls):
         super().setUpClass()
-        # force sync for demo records
-        cls.env["edi.endpoint"].search([])._handle_registry_sync()
+        cls._setup_env()
+        cls._setup_records()
+        # Sync only the endpoint under test to avoid re-registering unrelated
+        # demo routes that may already exist in the route registry.
+        cls.endpoint._handle_registry_sync()
 
     def tearDown(self):
         # Clear routing cache so each test starts clean

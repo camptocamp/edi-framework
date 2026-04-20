@@ -6,10 +6,10 @@ import base64
 
 from odoo import exceptions
 
-from .common import CommonEDIEndpoint
+from .common import EDIEndpointCommonTestCase
 
 
-class TestEndpoint(CommonEDIEndpoint):
+class TestEndpoint(EDIEndpointCommonTestCase):
     def test_endpoint_find(self):
         self.assertEqual(
             self.env["edi.endpoint"]._find_endpoint("/edi/demo/try"), self.endpoint
