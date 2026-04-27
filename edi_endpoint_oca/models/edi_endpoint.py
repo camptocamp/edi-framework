@@ -50,6 +50,28 @@ class EDIEndpoint(models.Model):
         rec = self.backend_id.create_record(self.exchange_type_id.code, vals)
         return rec
 
+    def _selection_exec_mode(self):
+        return super()._selection_exec_mode() + [
+            ("create_exchange_record", self.env._("Create exchange record")),
+        ]
+
+    def _validate_exec__create_exchange_record(self):
+        return True
+
+    def _handle_exec__create_exchange_record(self, request):
+        """Persist the raw HTTP body as an exchange record and acknowledge.
+
+        This mode covers the common "receive and queue" case for incoming
+        EDI endpoints, and removes the need for a custom code snippet.
+        """
+        record = self.create_exchange_record(
+            file_content=request.httprequest.get_data(),
+        )
+        return {
+            "payload": {"status": "queued", "id": record.identifier},
+            "status_code": 200,
+        }
+
     def _check_endpoint_ready(self, request=False):
         if not self.backend_id or not self.exchange_type_id:
             msg = self.env._("Backend and exchange type are mandatory")
