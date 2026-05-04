@@ -1,52 +1,82 @@
 # Copyright 2024 CamptoCamp SA
 # License AGPL-3.0 or later (http://www.gnu.org/licenses/agpl).
 
-from unittest import mock
+from odoo.addons.component.tests.common import TransactionComponentRegistryCase
+from odoo.addons.edi_component_oca.tests.fake_components import (
+    FakeOutputGenerator,
+    FakeOutputSender,
+)
 
-from odoo import Command
-
-from odoo.addons.edi_oca.tests.common import EDIBackendCommonComponentTestCase
+from .common import OrderMixin, PurchaseEDIBackendTestMixin
 
 
-class TestsPurchaseEDIConfiguration(EDIBackendCommonComponentTestCase):
+class Generator(FakeOutputGenerator):
+    _backend_type = "purchase_demo"
+    _exchange_type = "demo_PurchaseOrder_out"
+
+
+class Sender(FakeOutputSender):
+    _backend_type = "purchase_demo"
+    _exchange_type = "demo_PurchaseOrder_out"
+
+
+class TestsPurchaseEDIConfiguration(
+    TransactionComponentRegistryCase, PurchaseEDIBackendTestMixin, OrderMixin
+):
     @classmethod
     def setUpClass(cls):
         super().setUpClass()
+        cls._setup_registry(cls)
+        cls._setup_env()
+        cls._setup_records()
         cls.purchase_order = cls.env["purchase.order"]
-        cls.product = cls.env["product.product"].create(
+        cls.exc_type_out = cls._create_exchange_type(
+            name="Demo Purchase Order out",
+            code="demo_PurchaseOrder_out",
+            direction="output",
+            exchange_filename_pattern="{record_name}-{type.code}-{dt}",
+            exchange_file_ext="xml",
+        )
+        model = cls.env.ref("edi_component_oca.model_edi_oca_component_handler")
+        cls.exc_type_out.generate_model_id = model
+        cls.exc_type_out.send_model_id = model
+        cls.exc_type_out.process_model_id = model
+        cls.exc_type_out.receive_model_id = model
+        cls.edi_conf = cls.env["edi.configuration"].create(
             {
-                "name": "Product 1",
-                "default_code": "1234567",
+                "name": "Demo Purchase Order - order confirmed",
+                "type_id": cls.exc_type_out.id,
+                "backend_id": cls.backend.id,
+                "model_id": cls.env["ir.model"]._get_id("purchase.order"),
+                "trigger_id": cls.env.ref(
+                    "edi_purchase_oca.edi_conf_trigger_purchase_order_state_change"
+                ).id,
+                "snippet_do": (
+                    "if record.state == 'purchase':\n"
+                    "  record._edi_send_via_edi(conf.type_id)"
+                ),
             }
         )
-        cls.exc_type_out = cls.env.ref("edi_purchase_oca.demo_edi_exc_type_order_out")
-        cls.edi_conf = cls.env.ref("edi_purchase_oca.demo_edi_configuration_confirmed")
-        cls.partner.edi_purchase_conf_ids = cls.edi_conf
+        cls.order_vals = cls._setup_order()
+        cls.vendor.edi_purchase_conf_ids = cls.edi_conf
+        cls._load_module_components(cls, "edi_core_oca")
+        cls._load_module_components(cls, "edi_purchase_oca")
+        cls._build_components(
+            cls,
+            Generator,
+            Sender,
+        )
 
-    @mock.patch("odoo.addons.edi_core_oca.models.edi_backend.EDIBackend._validate_data")
-    @mock.patch(
-        "odoo.addons.edi_core_oca.models.edi_backend.EDIBackend._exchange_generate"
-    )
-    @mock.patch("odoo.addons.edi_core_oca.models.edi_backend.EDIBackend._exchange_send")
-    def test_order_confirm(self, mock_send, mock_generate, mock_validate):
-        mock_generate.return_value = "TEST PO OUT"
-        order = self.purchase_order.create(
-            {
-                "partner_id": self.partner.id,
-                "order_line": [
-                    Command.create(
-                        {
-                            "product_id": self.product.id,
-                            "product_qty": 10,
-                            "price_unit": 100.0,
-                        }
-                    ),
-                ],
-            }
-        )
+    def setUp(self):
+        super().setUp()
+        Generator.reset_faked()
+        Sender.reset_faked()
+
+    def test_order_confirm(self):
+        order = self._create_purchase_order(**self.order_vals)
         self.assertEqual(order.state, "draft")
         self.assertEqual(len(order.exchange_record_ids), 0)
-        order.button_confirm()
+        order.with_context(fake_output="TEST PO OUT").button_confirm()
         self.assertEqual(order.state, "purchase")
         self.assertEqual(len(order.exchange_record_ids), 1)
         self.assertEqual(order.exchange_record_ids[0].type_id, self.exc_type_out)

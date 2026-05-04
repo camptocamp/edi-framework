@@ -74,10 +74,10 @@ Authors
 Contributors
 ------------
 
--  Lois Rilo lois.rilo@forgeflow.com
--  Simone Orsi simone.orsi@camptocamp.com
+- Lois Rilo lois.rilo@forgeflow.com
+- Simone Orsi simone.orsi@camptocamp.com
 
--  Phan Hong Phuc <phucph@trobz.com>
+- Phan Hong Phuc <phucph@trobz.com>
 
 Maintainers
 -----------
