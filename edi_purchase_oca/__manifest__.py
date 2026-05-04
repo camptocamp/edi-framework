@@ -13,13 +13,16 @@
     "depends": [
         "purchase",
         "edi_core_oca",
+        "edi_record_metadata_oca",
         "edi_component_oca",
     ],
     "data": [
-        "views/purchase_order_views.xml",
-        "views/edi_exchange_record_views.xml",
-        "views/res_partner_view.xml",
+        # Data
         "data/edi_configuration.xml",
+        # Views
+        "views/edi_exchange_record_views.xml",
+        "views/purchase_order_views.xml",
+        "views/res_partner_view.xml",
     ],
     "demo": [
         "demo/edi_backend.xml",
