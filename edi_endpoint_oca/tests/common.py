@@ -54,6 +54,12 @@ class EDIEndpointTestMixin:
             )
             or cls._get_endpoint()
         )
+        cls.endpoint_create_record = cls.endpoint.copy(
+            {
+                "exec_mode": "create_exchange_record",
+                "code_snippet": False,
+            }
+        )
 
     @classmethod
     def _get_backend_type(cls):
