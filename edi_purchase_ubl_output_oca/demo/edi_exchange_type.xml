@@ -8,13 +8,8 @@
         <field name="exchange_filename_pattern">{record_name}-{type.code}-{dt}</field>
         <field name="exchange_file_ext">xml</field>
         <field
-            name="model_ids"
-            eval="[(6, 0, [ref('purchase.model_purchase_order')])]"
+            name="generate_model_id"
+            ref="edi_purchase_ubl_output_oca.model_edi_output_ubl_purchase_order"
         />
-        <field name="advanced_settings_edit">
-components:
-  generate:
-    usage: output.generate.purchase.order
-        </field>
     </record>
 </odoo>

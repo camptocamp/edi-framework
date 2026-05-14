@@ -2,23 +2,22 @@
 # @author: Simone Orsi <simone.orsi@camptocamp.com>
 # License AGPL-3.0 or later (http://www.gnu.org/licenses/agpl).
 
+from odoo import models
 
-from odoo.addons.component.core import Component
 
-
-class EDIExchangePOGenerate(Component):
+class EDIExchangePOGenerate(models.AbstractModel):
     """Generate purchase orders."""
 
+    _description = "UBL output generator for purchase orders"
+
     _name = "edi.output.ubl.purchase.order"
-    _inherit = "edi.component.output.mixin"
-    _usage = "output.generate.purchase.order"
+    _inherit = "edi.oca.handler.generate"
 
-    def generate(self):
-        return self._generate_ubl_xml()
+    def generate(self, exchange_record):
+        return self._generate_ubl_xml(exchange_record)
 
-    # TODO: add tests
-    def _generate_ubl_xml(self):
-        order = self.record
+    def _generate_ubl_xml(self, exchange_record):
+        order = exchange_record.record
         doc_type = order.get_ubl_purchase_order_doc_type()
         if not doc_type:
             raise NotImplementedError("TODO: handle no doc type")
