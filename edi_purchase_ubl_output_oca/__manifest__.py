@@ -8,7 +8,7 @@
     "version": "14.0.1.1.0",
     "development_status": "Alpha",
     "license": "AGPL-3",
-    "website": "https://github.com/OCA/edi",
+    "website": "https://github.com/OCA/edi-framework",
     "author": "Camptocamp, Odoo Community Association (OCA)",
     "maintainers": ["simahawk"],
     "depends": ["edi_purchase_oca", "edi_ubl_oca", "purchase_order_ubl"],
