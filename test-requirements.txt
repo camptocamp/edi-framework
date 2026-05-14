@@ -1,2 +1,4 @@
 odoo-test-helper
 xmlunittest
+
+odoo-addon-purchase_order_ubl @ git+https://github.com/OCA/edi@refs/pull/1342/head#subdirectory=purchase_order_ubl
