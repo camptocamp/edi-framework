@@ -57,5 +57,5 @@ class EDIEndpointHttpCase(HttpCase, EDIEndpointTestMixin):
         self.assertEqual(len(capture.records), 1)
         record = capture.records
         self.assertEqual(record.identifier, payload["id"])
-        self.assertEqual(record.edi_exchange_state, "new")
+        self.assertEqual(record.edi_exchange_state, "input_received")
         self.assertEqual(base64.b64decode(record.exchange_file), body)
