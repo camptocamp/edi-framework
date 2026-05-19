@@ -1,2 +1,4 @@
 odoo-test-helper
 xmlunittest
+
+odoo-addon-endpoint @git+https://github.com/OCA/web-api@refs/pull/132/head#subdirectory=endpoint
