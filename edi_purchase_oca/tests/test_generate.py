@@ -29,6 +29,7 @@ class TestGenerateViaConf(TransactionCase, PurchaseEDIBackendTestMixin, OrderMix
     @classmethod
     def setUpClass(cls):
         super().setUpClass()
+        cls.env = cls.env(context=dict(cls.env.context, tracking_disable=True))
         cls._setup_env()
         cls._setup_records()
 
