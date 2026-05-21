@@ -238,6 +238,16 @@ msgstr ""
 "Spento: record allineato con il registro, non c'è niente da fare."
 
 #. module: edi_endpoint_oca
+#: model:ir.model.fields,help:edi_endpoint_oca.field_edi_endpoint__request_content_schema
+msgid ""
+"Optional schema validated against the parsed request body. The accepted "
+"format depends on 'Request content type':\n"
+" - application/json: JSON Schema (Draft 2020-12), as YAML or JSON\n"
+" - application/xml, text/xml: XML Schema (XSD)\n"
+"If empty, no validation runs."
+msgstr ""
+
+#. module: edi_endpoint_oca
 #: model:ir.model.fields,field_description:edi_endpoint_oca.field_edi_endpoint__readonly
 msgid "Readonly"
 msgstr "Solo lettura"
@@ -252,6 +262,16 @@ msgstr "Record generato attraverso questo endpoint"
 #: model:ir.model.fields,field_description:edi_endpoint_oca.field_edi_endpoint__registry_sync
 msgid "Registry Sync"
 msgstr "Sincro registro"
+
+#. module: edi_endpoint_oca
+#: model:ir.model.fields,field_description:edi_endpoint_oca.field_edi_endpoint__request_content_schema
+msgid "Request Content Schema"
+msgstr ""
+
+#. module: edi_endpoint_oca
+#: model:ir.model.fields,field_description:edi_endpoint_oca.field_edi_endpoint__request_content_schema_applicable
+msgid "Request Content Schema Applicable"
+msgstr ""
 
 #. module: edi_endpoint_oca
 #: model:ir.model.fields,field_description:edi_endpoint_oca.field_edi_endpoint__request_content_type
