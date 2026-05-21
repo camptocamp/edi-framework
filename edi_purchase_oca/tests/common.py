@@ -2,7 +2,7 @@
 # License AGPL-3.0 or later (http://www.gnu.org/licenses/agpl).
 
 from odoo import fields
-from odoo.fields import Command
+from odoo.fields import Command, Domain
 
 from odoo.addons.edi_core_oca.tests.common import EDIBackendTestMixin
 
@@ -11,7 +11,7 @@ class PurchaseEDIBackendTestMixin(EDIBackendTestMixin):
     @classmethod
     def _get_backend_type(cls):
         backend_type = cls.env["edi.backend.type"].search(
-            [("code", "=", "purchase_demo")], limit=1
+            Domain([("code", "=", "purchase_demo")]), limit=1
         )
         if backend_type:
             return backend_type
@@ -26,7 +26,7 @@ class PurchaseEDIBackendTestMixin(EDIBackendTestMixin):
     def _get_backend(cls):
         backend_type = cls._get_backend_type()
         backend = cls.env["edi.backend"].search(
-            [("backend_type_id", "=", backend_type.id)], limit=1
+            Domain([("backend_type_id", "=", backend_type.id)]), limit=1
         )
         if backend:
             return backend
@@ -43,7 +43,8 @@ class PurchaseEDIBackendTestMixin(EDIBackendTestMixin):
         code = kw.get("code")
         if code:
             exchange_type = model.search(
-                [("code", "=", code), ("backend_id", "=", cls.backend.id)], limit=1
+                Domain([("code", "=", code), ("backend_id", "=", cls.backend.id)]),
+                limit=1,
             )
             if exchange_type:
                 return exchange_type
