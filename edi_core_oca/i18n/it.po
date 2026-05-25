@@ -6,7 +6,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Odoo Server 17.0\n"
 "Report-Msgid-Bugs-To: \n"
-"PO-Revision-Date: 2026-03-09 14:45+0000\n"
+"PO-Revision-Date: 2026-05-25 22:46+0000\n"
 "Last-Translator: mymage <stefano.consolaro@mymage.it>\n"
 "Language-Team: none\n"
 "Language: it\n"
@@ -1079,7 +1079,7 @@ msgstr "Generatore"
 #. module: edi_core_oca
 #: model:ir.model.fields,field_description:edi_core_oca.field_edi_configuration__is_global
 msgid "Global Configuration"
-msgstr ""
+msgstr "Configurazione globale"
 
 #. module: edi_core_oca
 #: model:ir.model.fields,help:edi_core_oca.field_edi_exchange_type__encoding_in_error_handler
@@ -1161,6 +1161,8 @@ msgid ""
 "If checked, this configuration will be executed for all records, regardless "
 "of the partner relation."
 msgstr ""
+"Se selezionata, questa configurazione verrà eseguita per tutti i record, "
+"indipendentemente dalla relazione con il partner."
 
 #. module: edi_core_oca
 #: model:ir.model.fields,help:edi_core_oca.field_edi_exchange_type__exchange_filename_sequence_id
