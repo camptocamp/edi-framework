@@ -2,6 +2,7 @@
 # License LGPL-3.0 or later (http://www.gnu.org/licenses/lgpl).
 
 from odoo import api, fields, models
+from odoo.fields import Domain
 
 
 class EDIExchangeRecord(models.Model):
@@ -40,12 +41,14 @@ class EDIExchangeRecord(models.Model):
     def _edi_get_duplicates(self, count=False):
         self.ensure_one()
         return (self.search_count if count else self.search)(
-            [
-                ("id", "<", self.id),
-                ("res_id", "=", self.res_id),
-                ("model", "=", self.model),
-                ("type_id", "=", self.type_id.id),
-                ("edi_exchange_state", "in", ("new", "output_pending")),
-                ("block_obsolescence", "=", False),
-            ],
+            Domain(
+                [
+                    ("id", "<", self.id),
+                    ("res_id", "=", self.res_id),
+                    ("model", "=", self.model),
+                    ("type_id", "=", self.type_id.id),
+                    ("edi_exchange_state", "in", ("new", "output_pending")),
+                    ("block_obsolescence", "=", False),
+                ],
+            )
         )

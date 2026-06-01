@@ -1,11 +1,11 @@
 # Copyright 2024 Camptocamp
 # License LGPL-3.0 or later (http://www.gnu.org/licenses/lgpl).
 
-from odoo_test_helper import FakeModelLoader
-
+from odoo.orm.model_classes import add_to_registry
 from odoo.tools import mute_logger
 
 from odoo.addons.edi_core_oca.tests.common import EDIBackendCommonTestCase
+from odoo.addons.edi_core_oca.tests.fake_models import EdiTestExecution
 
 LOGGERS = (
     "odoo.addons.edi_core_oca.models.edi_backend",
@@ -14,28 +14,28 @@ LOGGERS = (
 
 
 class EDIDeduplicateTestCase(EDIBackendCommonTestCase):
-    def setUp(self):
-        super().setUp()
-        self.loader = FakeModelLoader(self.env, self.__module__)
-        self.loader.backup_registry()
-        from odoo.addons.edi_core_oca.tests.fake_models import EdiTestExecution
-
-        self.loader.update_registry((EdiTestExecution,))
-        self.model = self.env["ir.model"].search(
+    @classmethod
+    def _setup_records(cls):  # pylint:disable=missing-return
+        super()._setup_records()
+        add_to_registry(cls.registry, EdiTestExecution)
+        cls.registry._setup_models__(cls.env.cr, ["edi.framework.test.execution"])
+        cls.registry.init_models(
+            cls.env.cr,
+            ["edi.framework.test.execution"],
+            {"models_to_check": True},
+        )
+        cls.addClassCleanup(cls.registry.__delitem__, "edi.framework.test.execution")
+        cls.model = cls.env["ir.model"].search(
             [("model", "=", "edi.framework.test.execution")]
         )
-        self.exchange_type_out.write(
+        cls.exchange_type_out.write(
             {
                 "exchange_file_auto_generate": True,
-                "generate_model_id": self.model.id,
-                "send_model_id": self.model.id,
-                "output_validate_model_id": self.model.id,
+                "generate_model_id": cls.model.id,
+                "send_model_id": cls.model.id,
+                "output_validate_model_id": cls.model.id,
             }
         )
-
-    def tearDown(self):
-        self.loader.restore_registry()
-        super().tearDown()
 
     @mute_logger(*LOGGERS)
     def test_deduplicate_on_send(self):
