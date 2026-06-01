@@ -4,6 +4,7 @@
 import logging
 
 from odoo import models
+from odoo.fields import Domain
 
 _logger = logging.getLogger(__name__)
 
@@ -45,4 +46,4 @@ class EDIBackend(models.Model):
         ]
         if record_ids:
             domain.append(("id", "in", record_ids))
-        return domain
+        return Domain(domain)
