@@ -1743,6 +1743,16 @@ msgid "Waiting to be sent"
 msgstr "In attesa di essere inviato"
 
 #. module: edi_core_oca
+#: model:ir.model.fields,field_description:edi_core_oca.field_edi_exchange_record__website_message_ids
+msgid "Website Messages"
+msgstr "Messaggi sito web"
+
+#. module: edi_core_oca
+#: model:ir.model.fields,help:edi_core_oca.field_edi_exchange_record__website_message_ids
+msgid "Website communication history"
+msgstr "Cronologia comunicazioni sito web"
+
+#. module: edi_core_oca
 #: model:ir.model.fields,help:edi_core_oca.field_edi_exchange_type__quick_exec
 msgid ""
 "When active, records of this type will be processed immediately without "
@@ -1794,12 +1804,6 @@ msgstr "id"
 
 #~ msgid "Group By"
 #~ msgstr "Raggruppa per"
-
-#~ msgid "Website Messages"
-#~ msgstr "Messaggi sito web"
-
-#~ msgid "Website communication history"
-#~ msgstr "Cronologia comunicazioni sito web"
 
 #~ msgid "Job Channel"
 #~ msgstr "Canale lavoro"
