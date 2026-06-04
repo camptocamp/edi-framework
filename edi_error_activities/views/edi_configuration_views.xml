@@ -1,0 +1,43 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<odoo>
+    <record id="edi_configuration_view_form_error_activity" model="ir.ui.view">
+        <field name="model">edi.configuration</field>
+        <field name="inherit_id" ref="edi_core_oca.edi_configuration_view_form" />
+        <field name="arch" type="xml">
+            <xpath expr="//sheet/notebook" position="before">
+                <group string="Error Activity">
+                    <group>
+                        <field name="error_activity_enabled" />
+                        <field
+                            name="error_activity_states"
+                            invisible="not error_activity_enabled"
+                        />
+                        <field
+                            name="error_activity_target_model_id"
+                            options="{'no_create': True, 'no_create_edit': True}"
+                            invisible="not error_activity_enabled"
+                        />
+                        <field
+                            name="error_activity_type_id"
+                            invisible="not error_activity_enabled"
+                        />
+                        <field
+                            name="error_activity_dedup_key_template"
+                            invisible="not error_activity_enabled"
+                        />
+                    </group>
+                    <group>
+                        <field
+                            name="error_activity_user_strategy"
+                            invisible="not error_activity_enabled"
+                        />
+                        <field
+                            name="error_activity_user_id"
+                            invisible="not error_activity_enabled or error_activity_user_strategy != 'configured_user'"
+                        />
+                    </group>
+                </group>
+            </xpath>
+        </field>
+    </record>
+</odoo>
