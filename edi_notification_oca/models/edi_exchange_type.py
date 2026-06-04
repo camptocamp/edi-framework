@@ -1,7 +1,7 @@
 # Copyright 2024 Camptocamp SA
 # License LGPL-3.0 or later (http://www.gnu.org/licenses/lgpl).
 
-from odoo import api, fields, models
+from odoo import Command, api, fields, models
 
 
 class EDIExchangeType(models.Model):
@@ -40,8 +40,8 @@ class EDIExchangeType(models.Model):
     @api.onchange("notify_on_process_error")
     def _onchange_notify_on_process_error(self):
         if not self.notify_on_process_error:
-            self.notify_on_process_error_groups_ids = None
-            self.notify_on_process_error_users_ids = None
+            self.notify_on_process_error_groups_ids = [Command.clear()]
+            self.notify_on_process_error_users_ids = [Command.clear()]
 
     def _inverse_notify_on_process_error_groups_users(self):
         for rec in self:
