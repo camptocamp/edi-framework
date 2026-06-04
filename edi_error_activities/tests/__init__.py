@@ -1,0 +1,1 @@
+from . import test_edi_error_activity_configuration
