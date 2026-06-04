@@ -4,7 +4,7 @@
 {
     "name": "EDI Notification",
     "summary": """Define notification activities on exchange records.""",
-    "version": "18.0.1.0.0",
+    "version": "19.0.1.0.0",
     "development_status": "Alpha",
     "license": "LGPL-3",
     "website": "https://github.com/OCA/edi-framework",
