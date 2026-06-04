@@ -9,8 +9,11 @@
     "license": "LGPL-3",
     "website": "https://github.com/OCA/edi-framework",
     "author": "Camptocamp,Odoo Community Association (OCA)",
-    # TODO v19: consider getting rid off `edi_component_oca` dep
-    "depends": ["edi_core_oca", "edi_component_oca"],
-    "data": ["data/mail_activity_type.xml", "views/edi_exchange_type.xml"],
+    "depends": ["edi_core_oca"],
+    "data": [
+        "data/mail_activity_type.xml",
+        "data/edi_configuration.xml",
+        "views/edi_exchange_type.xml",
+    ],
     "installable": True,
 }

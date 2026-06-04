@@ -32,6 +32,17 @@ class EDIExchangeType(models.Model):
         default=lambda self: self._default_notify_on_process_error_activity_type_id(),
     )
 
+    def _edi_notify_on_error_enabled(self):
+        self.ensure_one()
+        return bool(
+            self.notify_on_process_error
+            and self.notify_on_process_error_activity_type_id
+            and (
+                self.notify_on_process_error_groups_ids
+                or self.notify_on_process_error_users_ids
+            )
+        )
+
     def _default_notify_on_process_error_activity_type_id(self):
         return self.env.ref(
             "edi_notification_oca.mail_activity_failed_exchange_record_warning", False
