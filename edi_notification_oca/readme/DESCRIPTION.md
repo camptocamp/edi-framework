@@ -1,5 +1,8 @@
 This module creates activities for users when an exchange record's process fails.
 
+It also installs an ``edi.configuration`` rule (``Notify Users On Exchange
+Error``) that calls ``edi.notification.tool`` on process errors.
+
 Exchange types must be configured properly to create such activities:
 
 - field "Notify On Process Error" must be checked to activate the feature

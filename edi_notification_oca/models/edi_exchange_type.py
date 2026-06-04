@@ -31,6 +31,26 @@ class EDIExchangeType(models.Model):
         string="Activity Type Used When Notify On Process Error",
         default=lambda self: self._default_notify_on_process_error_activity_type_id(),
     )
+    notify_on_process_error_enabled = fields.Boolean(
+        compute="_compute_notify_on_process_error_enabled",
+    )
+
+    @api.depends(
+        "notify_on_process_error",
+        "notify_on_process_error_activity_type_id",
+        "notify_on_process_error_groups_ids",
+        "notify_on_process_error_users_ids",
+    )
+    def _compute_notify_on_process_error_enabled(self):
+        for rec in self:
+            rec.notify_on_process_error_enabled = bool(
+                rec.notify_on_process_error
+                and rec.notify_on_process_error_activity_type_id
+                and (
+                    rec.notify_on_process_error_groups_ids
+                    or rec.notify_on_process_error_users_ids
+                )
+            )
 
     def _default_notify_on_process_error_activity_type_id(self):
         return self.env.ref(
