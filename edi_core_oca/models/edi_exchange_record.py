@@ -97,6 +97,7 @@ class EDIExchangeRecord(models.Model):
             ("output_sent", "Sent"),
             ("output_sent_and_processed", "Sent and processed"),
             ("output_sent_and_error", "Sent and error"),
+            ("output_cancel", "Sending canceled"),
             # input exchange states
             ("input_pending", "Waiting to be received"),
             ("input_received", "Received"),
@@ -423,6 +424,7 @@ class EDIExchangeRecord(models.Model):
             ),
             "ack_received_error": self.env._("ACK file received but contains errors."),
             "validate_ko": self.env._("Exchange not valid"),
+            "cancel": self.env._("Exchange canceled"),
         }
 
     def _exchange_status_message(self, key):
@@ -557,6 +559,12 @@ class EDIExchangeRecord(models.Model):
             level="error",
         )
         self._trigger_edi_event("error")
+
+    def _notify_cancel(self, message=None):
+        if message is None:
+            message = self._exchange_status_message("cancel")
+        self._notify_related_record(message)
+        self._trigger_edi_event("cancel")
 
     def _notify_ack_received(self):
         self._notify_related_record(self._exchange_status_message("ack_received"))

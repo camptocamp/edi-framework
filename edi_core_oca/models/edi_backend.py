@@ -62,6 +62,9 @@ class EDIBackend(models.Model):
     Usecase: the web service you send the file to processes it on the fly.
     """
     )
+    output_cancel_cannot_send_auto = fields.Boolean(
+        string="Automatically cancel the records that cannot be sent"
+    )
     active = fields.Boolean(default=True)
     company_id = fields.Many2one("res.company", string="Company")
     auto_archive_records_after_days = fields.Integer(
@@ -225,7 +228,11 @@ class EDIBackend(models.Model):
         # In case already sent: skip sending and check the state
         check = self._output_check_send(exchange_record)
         if not check:
-            return self._failed_output_check_send_msg()
+            message = self._failed_output_check_send_msg(exchange_record=exchange_record)
+            if self.output_cancel_cannot_send_auto:
+                exchange_record.edi_exchange_state = "output_cancel"
+                exchange_record._notify_cancel(message)
+            return message
         state = exchange_record.edi_exchange_state
         error = traceback = False
         message = None
@@ -675,7 +682,7 @@ class EDIBackend(models.Model):
                 raise
             return False
 
-    def _failed_output_check_send_msg(self):
+    def _failed_output_check_send_msg(self, exchange_record=None):
         return "Nothing to do. Likely already sent."
 
     def _get_exec_handler(self, exchange_record, action):

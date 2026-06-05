@@ -133,3 +133,11 @@ class EDIBackendTestOutputCase(EDIBackendCommonTestCase):
             ).exchange_send(self.record)
         self.assertRecordValues(self.record, [{"edi_exchange_state": "output_pending"}])
         self.assertFalse(self.record.exchange_error)
+
+    def test_send_auto_cancel(self):
+        self.backend.write({"output_cancel_cannot_send_auto": True})
+        self.record.write({"edi_exchange_state": "output_pending"})
+        with mock.patch.object(type(self.backend), "_output_check_send") as mocked:
+            mocked.return_value = False
+            self.backend.exchange_send(self.record)
+            self.assertRecordValues(self.record, [{"edi_exchange_state": "output_cancel"}])
