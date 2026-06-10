@@ -411,6 +411,9 @@ the same record. If so, mark the oldest one as obsolete (except
 <ul class="simple">
 <li>“block_obsolescence” is an technical option on records to avoid
 marking them as obsolete.</li>
+<li>You can restrict deduplication to specific exchange states with the
+technical field “deduplicate_on_exchange_record_status”
+(comma-separated values from “edi_exchange_state”).</li>
 </ul>
 <p>With all the types that have been enabled “Delete obsolete records”
 option, the cron will remove their obsolete records.</p>
@@ -440,6 +443,7 @@ If you spotted it first, help us to smash it by providing a detailed and welcome
 <ul class="simple">
 <li>Simone Orsi &lt;<a class="reference external" href="mailto:simone.orsi&#64;camptocamp.com">simone.orsi&#64;camptocamp.com</a>&gt;</li>
 <li>Duong (Tran Quoc) &lt;<a class="reference external" href="mailto:duongtq&#64;trobz.com">duongtq&#64;trobz.com</a>&gt;</li>
+<li>Hadrien Huvelle &lt;<a class="reference external" href="mailto:hadrien.huvelle&#64;camptocamp.com">hadrien.huvelle&#64;camptocamp.com</a>&gt;</li>
 </ul>
 </div>
 <div class="section" id="maintainers">
