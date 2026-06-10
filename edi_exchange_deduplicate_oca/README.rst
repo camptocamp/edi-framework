@@ -62,6 +62,9 @@ the same record. If so, mark the oldest one as obsolete (except
 
 - "block_obsolescence" is an technical option on records to avoid
   marking them as obsolete.
+- You can restrict deduplication to specific exchange states with the
+  technical field "deduplicate_on_exchange_record_status"
+  (comma-separated values from "edi_exchange_state").
 
 With all the types that have been enabled "Delete obsolete records"
 option, the cron will remove their obsolete records.
@@ -92,6 +95,7 @@ Contributors
 
 - Simone Orsi <simone.orsi@camptocamp.com>
 - Duong (Tran Quoc) <duongtq@trobz.com>
+- Hadrien Huvelle <hadrien.huvelle@camptocamp.com>
 
 Maintainers
 -----------

@@ -40,6 +40,9 @@ class EDIExchangeRecord(models.Model):
 
     def _edi_get_duplicates(self, count=False):
         self.ensure_one()
+        edi_exchange_state_to_check = list(
+            self.type_id._deduplicate_get_exchange_record_states()
+        )
         return (self.search_count if count else self.search)(
             Domain(
                 [
@@ -47,7 +50,7 @@ class EDIExchangeRecord(models.Model):
                     ("res_id", "=", self.res_id),
                     ("model", "=", self.model),
                     ("type_id", "=", self.type_id.id),
-                    ("edi_exchange_state", "in", ("new", "output_pending")),
+                    ("edi_exchange_state", "in", edi_exchange_state_to_check),
                     ("block_obsolescence", "=", False),
                 ],
             )
