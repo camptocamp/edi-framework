@@ -4,7 +4,7 @@
 #
 msgid ""
 msgstr ""
-"Project-Id-Version: Odoo Server 18.0\n"
+"Project-Id-Version: Odoo Server 19.0\n"
 "Report-Msgid-Bugs-To: \n"
 "Last-Translator: \n"
 "Language-Team: \n"
@@ -39,6 +39,13 @@ msgid "Activity Type Used When Notify On Process Error"
 msgstr ""
 
 #. module: edi_notification_oca
+#: model:ir.model.fields,field_description:edi_notification_oca.field_edi_exchange_record__display_name
+#: model:ir.model.fields,field_description:edi_notification_oca.field_edi_exchange_type__display_name
+#: model:ir.model.fields,field_description:edi_notification_oca.field_edi_notification_tool__display_name
+msgid "Display Name"
+msgstr ""
+
+#. module: edi_notification_oca
 #: model:mail.activity.type,name:edi_notification_oca.mail_activity_failed_exchange_record_warning
 msgid "EDI Exchange Record: Failed"
 msgstr ""
@@ -49,19 +56,31 @@ msgid "EDI Exchange Type"
 msgstr ""
 
 #. module: edi_notification_oca
+#: model:ir.model,name:edi_notification_oca.model_edi_notification_tool
+msgid "EDI Notification Tool"
+msgstr ""
+
+#. module: edi_notification_oca
 #: model:ir.model,name:edi_notification_oca.model_edi_exchange_record
 msgid "EDI exchange Record"
 msgstr ""
 
 #. module: edi_notification_oca
 #. odoo-python
-#: code:addons/edi_notification_oca/components/listener.py:0
+#: code:addons/edi_notification_oca/models/edi_notification_tool.py:0
 msgid "EDI: Process error on record '%(identifier)s'."
 msgstr ""
 
 #. module: edi_notification_oca
 #: model:ir.model.fields,help:edi_notification_oca.field_edi_exchange_record__activity_type_icon
 msgid "Font awesome icon e.g. fa-tasks"
+msgstr ""
+
+#. module: edi_notification_oca
+#: model:ir.model.fields,field_description:edi_notification_oca.field_edi_exchange_record__id
+#: model:ir.model.fields,field_description:edi_notification_oca.field_edi_exchange_type__id
+#: model:ir.model.fields,field_description:edi_notification_oca.field_edi_notification_tool__id
+msgid "ID"
 msgstr ""
 
 #. module: edi_notification_oca
@@ -115,6 +134,11 @@ msgstr ""
 #. module: edi_notification_oca
 #: model:ir.model.fields,field_description:edi_notification_oca.field_edi_exchange_type__notify_on_process_error
 msgid "Notify On Process Error"
+msgstr ""
+
+#. module: edi_notification_oca
+#: model:ir.model.fields,field_description:edi_notification_oca.field_edi_exchange_type__notify_on_process_error_enabled
+msgid "Notify On Process Error Enabled"
 msgstr ""
 
 #. module: edi_notification_oca
