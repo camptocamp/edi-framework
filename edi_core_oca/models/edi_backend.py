@@ -549,7 +549,7 @@ class EDIBackend(models.Model):
         old_state = state = exchange_record.edi_exchange_state
         error = traceback = False
         message = None
-        content = None
+        res = None
         try:
             receive_result = self._ensure_action_result(
                 self._exchange_receive(exchange_record)
