@@ -4,6 +4,9 @@
 
 import functools
 from ast import literal_eval
+from datetime import timedelta
+
+import pytz
 
 from odoo import fields, models
 
@@ -47,6 +50,23 @@ class EdiExchangeRecord(models.Model):
         priority = exchange_type.job_priority
         if priority:
             params["priority"] = priority
+        eta_time = exchange_type.eta_time
+        if eta_time:
+            # Parse Float time format: 22.5 = 22:30
+            hours, minutes = divmod(round(eta_time * 60), 60)
+            user_tz = pytz.timezone(self.env.user.tz or "UTC")
+            utc_tz = pytz.UTC
+            now_utc = fields.Datetime.now().replace(tzinfo=utc_tz)
+            now_user = now_utc.astimezone(user_tz)
+            # Compute target time today in user's timezone
+            target_user = now_user.replace(
+                hour=hours, minute=minutes, second=0, microsecond=0
+            )
+            # If target time has passed, use tomorrow
+            if target_user <= now_user:
+                target_user += timedelta(days=1)
+            # Convert back to naive UTC for Odoo's database storage
+            params["eta"] = target_user.astimezone(utc_tz).replace(tzinfo=None)
         # Avoid generating the same job for the same record if existing
         params["identity_key"] = exchange_record_job_identity_exact
         return params

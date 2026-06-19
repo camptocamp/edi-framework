@@ -12,3 +12,8 @@ class EdiExchangeType(models.Model):
         comodel_name="queue.job.channel",
     )
     job_priority = fields.Integer()
+    eta_time = fields.Float(
+        string="Execute at (timezone aware)",
+        help="Daily time (HH:MM) at which jobs for this type should be scheduled, "
+        "in your local timezone. Leave empty to disable.",
+    )
