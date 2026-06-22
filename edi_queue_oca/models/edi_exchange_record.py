@@ -4,13 +4,10 @@
 
 import functools
 from ast import literal_eval
-from datetime import timedelta
-
-import pytz
 
 from odoo import fields, models
 
-from ..utils import exchange_record_job_identity_exact
+from ..utils import eta_float_to_utc, exchange_record_job_identity_exact
 
 
 class EdiExchangeRecord(models.Model):
@@ -41,28 +38,6 @@ class EdiExchangeRecord(models.Model):
     def action_exchange_send_job_options(self):
         return {"priority": 0}
 
-    def _eta_float_to_utc(self, eta_time):
-        """Convert a decimal-hour ETA to the next occurrence as a naive UTC datetime.
-
-        ``eta_time`` is a float in [0, 24) where the fractional part represents
-        minutes (e.g. 22.5 → 22:30). The target is expressed in the current
-        user's timezone and rolled forward by one day when the time has already
-        passed today.
-
-        Returns a naive UTC datetime suitable for ``queue.job`` ``eta`` param.
-        """
-        hours, minutes = divmod(round(eta_time * 60), 60)
-        user_tz = pytz.timezone(self.env.user.tz or "UTC")
-        utc_tz = pytz.UTC
-        now_utc = fields.Datetime.now().replace(tzinfo=utc_tz)
-        now_user = now_utc.astimezone(user_tz)
-        target_user = now_user.replace(
-            hour=hours, minute=minutes, second=0, microsecond=0
-        )
-        if target_user <= now_user:
-            target_user += timedelta(days=1)
-        return target_user.astimezone(utc_tz).replace(tzinfo=None)
-
     def _job_delay_params(self):
         params = {}
         exchange_type = self.type_id.sudo()
@@ -72,9 +47,8 @@ class EdiExchangeRecord(models.Model):
         priority = exchange_type.job_priority
         if priority:
             params["priority"] = priority
-        eta_time = exchange_type.eta_time
-        if eta_time:
-            params["eta"] = self._eta_float_to_utc(eta_time)
+        if exchange_type.eta_enabled:
+            params["eta"] = eta_float_to_utc(self.env, exchange_type.eta_time)
         # Avoid generating the same job for the same record if existing
         params["identity_key"] = exchange_record_job_identity_exact
         return params
