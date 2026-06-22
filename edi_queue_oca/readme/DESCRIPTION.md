@@ -1,3 +1,6 @@
-This module integrates EDI with Queue Job and now the edi exchange records are generated using queue.
+This module integrates EDI exchange records with
+[Queue Job](https://github.com/OCA/queue), so that the four core exchange
+actions — **generate**, **send**, **receive**, and **process** — are dispatched
+as background jobs instead of running synchronously.
 
-No need of doing a configuration on it, however, we can specify priority and channel in exchange type.
+No need of doing a configuration on it, however, we can specify eta, priority and channel in exchange type.
