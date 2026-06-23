@@ -8,10 +8,7 @@ from datetime import datetime
 import pytz
 from freezegun import freeze_time
 
-from odoo.exceptions import ValidationError
-
 from odoo.addons.edi_core_oca.tests.common import EDIBackendCommonTestCase
-from odoo.addons.edi_queue_oca.utils import eta_float_to_utc
 from odoo.addons.queue_job.delay import DelayableRecordset
 
 
@@ -44,8 +41,9 @@ class EDIRecordTestCase(EDIBackendCommonTestCase):
         )
         self.exchange_type_in.job_channel_id = channel
         self.exchange_type_in.job_priority = 5
-        self.exchange_type_in.eta_enabled = True
-        self.exchange_type_in.eta_time = 22.0
+        self.exchange_type_in.job_eta_enabled = True
+        self.exchange_type_in.job_eta_hour = "22"
+        self.exchange_type_in.job_eta_minute = "00"
         delayed = self._get_delayed(record)
         job_eta = delayed.delayable.eta
         utc_tz = pytz.UTC
@@ -61,22 +59,24 @@ class EDIRecordTestCase(EDIBackendCommonTestCase):
         self.assertEqual(delayed.delayable.priority, 5)
 
     def test_eta_disabled_no_eta_applied(self):
-        """eta_enabled=False: no ETA is set regardless of eta_time value."""
-        self.exchange_type_in.eta_time = 22.0
-        # eta_enabled defaults to False
+        """job_eta_enabled=False: no ETA is set regardless of  value."""
+        self.exchange_type_in.job_eta_hour = "22"
+        self.exchange_type_in.job_eta_minute = "00"
+        # job_eta_enabled defaults to False
         record = self._make_record()
         self.assertIsNone(self._get_job_eta(record))
 
     def test_eta_time_invalid_not_24h(self):
-        with self.assertRaises(ValidationError):
-            self.exchange_type_in.write({"eta_enabled": True, "eta_time": 28})
+        with self.assertRaises(ValueError):
+            self.exchange_type_in.write({"job_eta_enabled": True, "job_eta_hour": "28"})
 
     @freeze_time("2024-01-15 20:00:00")
     def test_eta_scheduled_same_day(self):
         """ETA not yet reached today: job lands on the same calendar day."""
         self.env.user.tz = "UTC"
-        self.exchange_type_in.eta_enabled = True
-        self.exchange_type_in.eta_time = 22.0
+        self.exchange_type_in.job_eta_enabled = True
+        self.exchange_type_in.job_eta_hour = "22"
+        self.exchange_type_in.job_eta_minute = "00"
         record = self._make_record()
         self.assertEqual(
             self._get_job_eta(record),
@@ -87,8 +87,9 @@ class EDIRecordTestCase(EDIBackendCommonTestCase):
     def test_eta_scheduled_next_day(self):
         """ETA already passed today: job rolls over to the next calendar day."""
         self.env.user.tz = "UTC"
-        self.exchange_type_in.eta_enabled = True
-        self.exchange_type_in.eta_time = 22.0
+        self.exchange_type_in.job_eta_enabled = True
+        self.exchange_type_in.job_eta_hour = "22"
+        self.exchange_type_in.job_eta_minute = "00"
         record = self._make_record()
         self.assertEqual(
             self._get_job_eta(record),
@@ -97,20 +98,13 @@ class EDIRecordTestCase(EDIBackendCommonTestCase):
 
     @freeze_time("2024-01-15 20:00:00")
     def test_eta_midnight_schedules_next_day(self):
-        """eta_time=0.0 (midnight) schedules for the next 00:00 in user TZ."""
+        """=0.0 (midnight) schedules for the next 00:00 in user TZ."""
         self.env.user.tz = "UTC"
-        self.exchange_type_in.eta_enabled = True
-        self.exchange_type_in.eta_time = 0.0
+        self.exchange_type_in.job_eta_enabled = True
+        self.exchange_type_in.job_eta_hour = "00"
+        self.exchange_type_in.job_eta_minute = "00"
         record = self._make_record()
         self.assertEqual(
             self._get_job_eta(record),
             datetime(2024, 1, 16, 0, 0, 0),
         )
-
-    @freeze_time("2024-01-15 20:00:00")
-    def test_eta_near_midnight_no_overflow(self):
-        """Values just below 24 must not crash with ValueError at runtime."""
-        self.env.user.tz = "UTC"
-        # 23.992 * 60 = 1439.52 → round → 1440 → % 1440 = 0 → midnight next day
-        result = eta_float_to_utc(self.env, 23.992)
-        self.assertEqual(result, datetime(2024, 1, 16, 0, 0, 0))

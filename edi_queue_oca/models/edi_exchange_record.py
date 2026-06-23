@@ -7,7 +7,7 @@ from ast import literal_eval
 
 from odoo import fields, models
 
-from ..utils import eta_float_to_utc, exchange_record_job_identity_exact
+from ..utils import exchange_record_job_identity_exact
 
 
 class EdiExchangeRecord(models.Model):
@@ -47,8 +47,8 @@ class EdiExchangeRecord(models.Model):
         priority = exchange_type.job_priority
         if priority:
             params["priority"] = priority
-        if exchange_type.eta_enabled:
-            params["eta"] = eta_float_to_utc(self.env, exchange_type.eta_time)
+        if exchange_type.job_eta_enabled:
+            params["eta"] = exchange_type._get_job_eta()
         # Avoid generating the same job for the same record if existing
         params["identity_key"] = exchange_record_job_identity_exact
         return params
