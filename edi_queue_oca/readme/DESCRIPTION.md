@@ -4,6 +4,6 @@ actions — **generate**, **send**, **receive**, and **process** — are dispatc
 as background jobs instead of running synchronously.
 
 Each exchange type can optionally route its jobs to a specific channel, set a
-priority, or **accumulate all jobs until a fixed time of day** — useful when a
-partner's receiving system has a nightly processing window or when the operator
-wants to concentrate resource-intensive EDI work into off-peak hours.
+priority, or **hold all jobs until a fixed time of day** — useful when a
+trading partner's receiving system has a nightly processing window or when the
+operator wants to concentrate resource-intensive EDI work in off-peak hours.
