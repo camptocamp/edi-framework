@@ -4,12 +4,10 @@
 
 from odoo.tests.common import TransactionCase
 
-from odoo.addons.edi_core_oca.tests.common import EDIBackendTestMixin
-
-from .common import OrderMixin
+from .common import OrderMixin, SaleEDIBackendTestMixin
 
 
-class TestOrder(TransactionCase, EDIBackendTestMixin, OrderMixin):
+class TestOrder(TransactionCase, SaleEDIBackendTestMixin, OrderMixin):
     @classmethod
     def setUpClass(cls):
         super().setUpClass()
@@ -20,13 +18,10 @@ class TestOrder(TransactionCase, EDIBackendTestMixin, OrderMixin):
         cls.exc_record_in = cls.backend.create_record(
             cls.exchange_type_in.code, {"edi_exchange_state": "input_received"}
         )
+        cls._setup_order_records()
         cls.order = cls._setup_order(
             origin_exchange_record_id=cls.exc_record_in.id,
         )
-
-    @classmethod
-    def _get_backend(cls):
-        return cls.env.ref("edi_sale_oca.demo_edi_backend")
 
     def test_line_origin(self):
         order = self.order
