@@ -31,21 +31,18 @@ class EdiExchangeType(models.Model):
         [(str(x).zfill(2), str(x).zfill(2)) for x in range(24)],
         string="Execution time - hour",
         help="Hour of the day at which jobs for this type should be scheduled.",
-        required=True,
         default="00",
     )
     job_eta_minute = fields.Selection(
         [(str(x).zfill(2), str(x).zfill(2)) for x in range(60)],
         string="Execution time - minute",
         help="Minute of the hour at which jobs for this type should be scheduled.",
-        required=True,
         default="00",
     )
     job_eta_tz = fields.Selection(
         timezone_selection,
         string="Execution time - timezone",
         help="ETA's timezone for jobs of this type",
-        required=True,
         default=lambda self: self._get_default_eta_tz(),
     )
 
@@ -57,7 +54,12 @@ class EdiExchangeType(models.Model):
     def _get_job_eta(self):
         """Returns the ETA for the current type as timezone-naive datetime"""
         self.ensure_one()
-        if not self.job_eta_enabled:
+        if (
+            not self.job_eta_enabled
+            or not self.job_eta_tz
+            or not self.job_eta_hour
+            or not self.job_eta_minute
+        ):
             return None
 
         self.ensure_one()
