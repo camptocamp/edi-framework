@@ -31,6 +31,7 @@ addon | version | maintainers | summary
 [edi_purchase_oca](edi_purchase_oca/) | 19.0.1.0.0 |  | Define EDI Configuration for Purchase Orders
 [edi_queue_oca](edi_queue_oca/) | 19.0.1.0.0 |  | Set Queue Jobs on EDI
 [edi_record_metadata_oca](edi_record_metadata_oca/) | 19.0.1.0.1 | <a href='https://github.com/simahawk'><img src='https://github.com/simahawk.png' width='32' height='32' style='border-radius:50%;' alt='simahawk'/></a> | Allow to store metadata for related records.
+[edi_sale_oca](edi_sale_oca/) | 19.0.1.0.0 | <a href='https://github.com/simahawk'><img src='https://github.com/simahawk.png' width='32' height='32' style='border-radius:50%;' alt='simahawk'/></a> | Configuration and special behaviors for EDI on sales.
 [edi_ubl_oca](edi_ubl_oca/) | 19.0.1.0.0 | <a href='https://github.com/simahawk'><img src='https://github.com/simahawk.png' width='32' height='32' style='border-radius:50%;' alt='simahawk'/></a> | Define EDI backend type for UBL.
 [edi_webservice_oca](edi_webservice_oca/) | 19.0.1.0.0 | <a href='https://github.com/etobella'><img src='https://github.com/etobella.png' width='32' height='32' style='border-radius:50%;' alt='etobella'/></a> <a href='https://github.com/simahawk'><img src='https://github.com/simahawk.png' width='32' height='32' style='border-radius:50%;' alt='simahawk'/></a> | Defines webservice integration from EDI Exchange records
 
