@@ -66,6 +66,33 @@ class EdiExchangeRecord(models.Model):
     def _job_retry_params(self):
         return {}
 
+    def _mark_failed_from_queue_job(self, job):
+        """Set the EDI error matching a terminal queue job failure.
+
+        :param job: failed ``queue.job`` record
+        """
+        failure_mapping = {
+            "action_exchange_process": ("input_processed_error", "process_ko"),
+            "action_exchange_receive": ("input_receive_error", "receive_ko"),
+            "action_exchange_send": ("output_error_on_send", "send_ko"),
+        }
+        failure = failure_mapping.get(job.method_name)
+        if not failure:
+            return
+        state, message_key = failure
+        for record in self:
+            state_changed = record.edi_exchange_state != state
+            record.write(
+                {
+                    "edi_exchange_state": state,
+                    "exchange_error": job.exc_message,
+                    "exchange_error_traceback": job.exc_info,
+                    "exchanged_on": fields.Datetime.now(),
+                }
+            )
+            if state_changed:
+                record._notify_error(message_key)
+
     def _compute_related_queue_jobs_count(self):
         for rec in self:
             # TODO: We should refactor the object field on queue_job to use jsonb field
