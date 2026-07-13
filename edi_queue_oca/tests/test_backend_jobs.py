@@ -94,6 +94,7 @@ class EDIBackendTestJobsCase(EDIBackendCommonTestCase, JobMixin):
         self.assertEqual(created, self._get_related_jobs(record))
 
     def test_output_fail_retry(self):
+        """Test a retryable send failure keeps the exchange pending."""
         job_counter = self.job_counter()
         vals = {
             "model": self.partner._name,
@@ -106,8 +107,113 @@ class EDIBackendTestJobsCase(EDIBackendCommonTestCase, JobMixin):
         job_counter.search_created()
         with mock.patch.object(type(self.backend), "_exchange_send") as mocked:
             mocked.side_effect = ReqConnectionError("Connection broken")
-            with self.assertRaises(RetryableJobError):
+            with self.assertRaisesRegex(RetryableJobError, "Connection broken"):
                 job.perform()
+        self.assertEqual(record.edi_exchange_state, "output_pending")
+
+    def test_failed_send_job_marks_exchange_as_error(self):
+        """Test a terminal send job failure marks its exchange as failed."""
+        record = self.backend.create_record(
+            "test_csv_output",
+            {
+                "model": self.partner._name,
+                "res_id": self.partner.id,
+                "edi_exchange_state": "output_pending",
+            },
+        )
+        record._set_file_content("ABC")
+        job = record.with_delay().action_exchange_send()
+
+        job.db_record().write(
+            {
+                "state": "failed",
+                "exc_message": "Connection broken",
+                "exc_info": "Traceback of the connection failure",
+            }
+        )
+
+        self.assertEqual(record.edi_exchange_state, "output_error_on_send")
+        self.assertEqual(record.exchange_error, "Connection broken")
+        self.assertEqual(
+            record.exchange_error_traceback, "Traceback of the connection failure"
+        )
+        self.assertTrue(record.exchanged_on)
+
+    def test_failed_receive_job_marks_exchange_as_error(self):
+        """Test a terminal receive job failure marks its exchange as failed."""
+        record = self.backend.create_record(
+            "test_csv_input",
+            {
+                "model": self.partner._name,
+                "res_id": self.partner.id,
+                "edi_exchange_state": "input_pending",
+            },
+        )
+        job = record.with_delay().action_exchange_receive()
+
+        job.db_record().write(
+            {
+                "state": "failed",
+                "exc_message": "Receive failed",
+                "exc_info": "Traceback for receive",
+            }
+        )
+
+        self.assertEqual(record.edi_exchange_state, "input_receive_error")
+        self.assertEqual(record.exchange_error, "Receive failed")
+        self.assertEqual(record.exchange_error_traceback, "Traceback for receive")
+
+    def test_failed_process_job_marks_exchange_as_error(self):
+        """Test a terminal process job failure marks its exchange as failed."""
+        record = self.backend.create_record(
+            "test_csv_input",
+            {
+                "model": self.partner._name,
+                "res_id": self.partner.id,
+                "edi_exchange_state": "input_received",
+            },
+        )
+        job = record.with_delay().action_exchange_process()
+
+        job.db_record().write(
+            {
+                "state": "failed",
+                "exc_message": "Process failed",
+                "exc_info": "Traceback for process",
+            }
+        )
+
+        self.assertEqual(record.edi_exchange_state, "input_processed_error")
+        self.assertEqual(record.exchange_error, "Process failed")
+        self.assertEqual(record.exchange_error_traceback, "Traceback for process")
+
+    def test_unsupported_failed_jobs_do_not_mark_exchange_as_error(self):
+        """Test generate and non-exchange jobs do not alter the exchange state."""
+        record = self.backend.create_record(
+            "test_csv_output",
+            {
+                "model": self.partner._name,
+                "res_id": self.partner.id,
+                "edi_exchange_state": "output_pending",
+            },
+        )
+        jobs = (
+            record.with_delay().action_exchange_generate(),
+            self.backend.with_delay().exchange_send(record),
+        )
+
+        for job in jobs:
+            job.db_record().write(
+                {
+                    "state": "failed",
+                    "exc_message": "Unsupported job failed",
+                    "exc_info": "Unsupported job traceback",
+                }
+            )
+
+        self.assertEqual(record.edi_exchange_state, "output_pending")
+        self.assertFalse(record.exchange_error)
+        self.assertFalse(record.exchange_error_traceback)
 
     def test_input(self):
         job_counter = self.job_counter()
