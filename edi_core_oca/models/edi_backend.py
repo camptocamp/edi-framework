@@ -246,13 +246,27 @@ class EDIBackend(models.Model):
             with self.env.cr.savepoint():
                 self._exchange_send(exchange_record)
                 _logger.debug("%s sent", exchange_record.identifier)
+        # FIXME: This should probably not be here as we do not depend on queue job
         except self._send_retryable_exceptions() as err:
             traceback = _get_exception_traceback()
             error = _get_exception_msg(err)
-            _logger.debug("%s send failed. To be retried.", exchange_record.identifier)
-            raise self._retryable_exception()(
-                error, **exchange_record._job_retry_params()
-            ) from err
+            queue_job = self.env["queue.job"].search(
+                [("uuid", "=", self.env.context.get("job_uuid"))], limit=1
+            )
+            # Do not retry if max number of retries is reached
+            if queue_job and queue_job.retry + 1 >= queue_job.max_retries:
+                state = "output_error_on_send"
+                res = f"Error: {error}"
+                _logger.debug(
+                    "%s send failed. Marked as errored.", exchange_record.identifier
+                )
+            else:
+                _logger.debug(
+                    "%s send failed. To be retried.", exchange_record.identifier
+                )
+                raise self._retryable_exception()(
+                    error, **exchange_record._job_retry_params()
+                ) from err
         except self._swallable_exceptions() as err:
             if self.env.context.get("_edi_send_break_on_error"):
                 raise
