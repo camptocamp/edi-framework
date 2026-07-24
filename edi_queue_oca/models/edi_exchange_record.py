@@ -36,7 +36,16 @@ class EdiExchangeRecord(models.Model):
         return super()._register_hook()
 
     def action_exchange_send_job_options(self):
-        return {"priority": 0}
+        return {"priority": 0, "on_fail_method": self._send_job_failed_hook}
+
+    def action_exchange_receive_job_options(self):
+        return {"on_fail_method": self._receive_job_failed_hook}
+
+    def action_exchange_process_job_options(self):
+        return {"on_fail_method": self._process_job_failed_hook}
+
+    def action_exchange_generate_job_options(self):
+        return {"on_fail_method": self._generate_job_failed_hook}
 
     def _job_delay_params(self):
         params = {}
@@ -102,3 +111,25 @@ class EdiExchangeRecord(models.Model):
         # Raise prio to max to send the record out as fast as possible.
         job1.on_done(self.delayable(priority=0).action_exchange_send())
         job1.delay()
+
+    def _generate_job_failed_hook(self, **kw):
+        return self._job_failed_hook("validate_error", kw=kw)
+
+    def _send_job_failed_hook(self, **kw):
+        return self._job_failed_hook("output_error_on_send", kw=kw)
+
+    def _receive_job_failed_hook(self, **kw):
+        return self._job_failed_hook("input_receive_error", kw=kw)
+
+    def _process_job_failed_hook(self, **kw):
+        return self._job_failed_hook("input_processed_error", kw=kw)
+
+    def _job_failed_hook(self, failed_state, **kw):
+        self.ensure_one()
+        self.write(
+            {
+                "edi_exchange_state": failed_state,
+                "exchange_error": ": ".join(kw["exc_name"], kw["exc_message"]),
+                "exchange_error_traceback": kw["exc_info"],
+            }
+        )
