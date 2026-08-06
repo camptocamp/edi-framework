@@ -315,12 +315,19 @@ class EDIBackend(models.Model):
         return res
 
     def _swallable_exceptions(self):
-        # TODO: improve this list
+        # These errors are permanent because retrying the same data will fail again.
+        # They should be swallowed so the exchange can move to an error state.
+        #
+        # SQL errors are handled separately: OperationalError may be transient,
+        # while IntegrityError requires process-specific transaction handling.
         return (
             ValueError,
             FileNotFoundError,
             exceptions.UserError,
             exceptions.ValidationError,
+            TypeError,
+            LookupError,  # covers KeyError / IndexError
+            AttributeError,
         )
 
     def _send_retryable_exceptions(self):
@@ -507,7 +514,14 @@ class EDIBackend(models.Model):
             error = _get_exception_msg(err)
             state = "input_processed_error"
             res = f"Error: {error}"
-        except (OperationalError, IntegrityError):
+        except IntegrityError as err:
+            if self.env.context.get("_edi_process_break_on_error"):
+                raise
+            traceback = _get_exception_traceback()
+            error = _get_exception_msg(err)
+            state = "input_processed_error"
+            res = f"Error: {error}"
+        except OperationalError:
             # We don't want the finally block to be executed in this case as
             # the cursor is already in an aborted state and any query will fail.
             res = "__sql_error__"

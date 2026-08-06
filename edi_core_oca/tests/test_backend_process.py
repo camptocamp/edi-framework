@@ -5,7 +5,6 @@
 import base64
 
 from freezegun import freeze_time
-from psycopg2 import IntegrityError
 
 from odoo import fields
 from odoo.exceptions import UserError
@@ -110,13 +109,31 @@ class EDIBackendTestProcessCase(EDIBackendCommonTestCase):
         with self.assertRaises(UserError):
             record.action_exchange_process()
 
+    @mute_logger("odoo.sql_db")
     def test_process_record_with_integrity_error(self):
+        conflicting_record = self.backend.create_record(
+            "test_csv_input",
+            {
+                "model": self.partner._name,
+                "res_id": self.partner.id,
+                "exchange_file": base64.b64encode(b"1234"),
+            },
+        )
+        original_identifier = self.record.identifier
+        duplicate_identifier = conflicting_record.identifier
         self.record.write({"edi_exchange_state": "input_received"})
-        with self.assertRaises(IntegrityError):
-            self.backend.with_context(
-                test_break_process=IntegrityError("SQL error")
-            ).exchange_process(self.record)
-        self.assertRecordValues(self.record, [{"edi_exchange_state": "input_received"}])
-        self.assertFalse(self.record.exchange_error)
+
+        self.record.with_context(
+            fake_update_values={"identifier": duplicate_identifier}
+        ).action_exchange_process()
+        self.assertRecordValues(
+            self.record,
+            [
+                {
+                    "identifier": original_identifier,
+                    "edi_exchange_state": "input_processed_error",
+                }
+            ],
+        )
 
     # TODO: test ack file are processed
