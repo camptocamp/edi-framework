@@ -36,16 +36,7 @@ class EdiExchangeRecord(models.Model):
         return super()._register_hook()
 
     def action_exchange_send_job_options(self):
-        return {"priority": 0, "on_fail_method": self._send_job_failed_hook}
-
-    def action_exchange_receive_job_options(self):
-        return {"on_fail_method": self._receive_job_failed_hook}
-
-    def action_exchange_process_job_options(self):
-        return {"on_fail_method": self._process_job_failed_hook}
-
-    def action_exchange_generate_job_options(self):
-        return {"on_fail_method": self._generate_job_failed_hook}
+        return {"priority": 0}
 
     def _job_delay_params(self):
         params = {}
