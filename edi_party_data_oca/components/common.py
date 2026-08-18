@@ -40,8 +40,9 @@ class EDIExchangePartyDataMixin(AbstractComponent):
         party = DotDict(
             name=self._get_name(),
             identifiers=self._get_identifiers(),
-            # TODO: is this only for UBL?
             endpoint=self._get_endpoint(),
+            lang=self._get_lang(),
+            partner=self.partner,
         )
         party.update(kw)
         return party
@@ -71,3 +72,12 @@ class EDIExchangePartyDataMixin(AbstractComponent):
             },
             value=id_number.name,
         )
+
+    def _get_lang(self):
+        lang_code = getattr(self.work, "lang", False) or self.partner.lang
+        if not lang_code:
+            return False
+        lang = self.env["res.lang"]._get_data(code=lang_code)
+        if not lang:
+            return False
+        return {"name": lang.name, "code": lang.code, "short": lang.code.split("_")[0]}

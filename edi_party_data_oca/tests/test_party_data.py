@@ -57,6 +57,14 @@ class PartyDataTestCase(EDIBackendCommonComponentTestCase):
     def _get_provider(self, partner, **kw):
         return get_party_data_component(self.exc_record, partner, **kw)
 
+    def _expected_lang(self, partner):
+        if not partner.lang:
+            return False
+        lang = self.env["res.lang"]._get_data(code=partner.lang)
+        if not lang:
+            return False
+        return {"name": lang.name, "code": lang.code, "short": lang.code.split("_")[0]}
+
     def _make_expected_data(
         self, partner, number, allowed_codes=None, name_field="name", **kw
     ):
@@ -68,6 +76,8 @@ class PartyDataTestCase(EDIBackendCommonComponentTestCase):
                 {"attrs": {"schemeID": "cat3"}, "value": f"cat3-p{number}"},
             ],
             "endpoint": {},
+            "lang": self._expected_lang(partner),
+            "partner": partner,
         }
         data.update(kw)
         if allowed_codes:
@@ -133,6 +143,30 @@ class PartyDataTestCase(EDIBackendCommonComponentTestCase):
             )
             res = provider.get_party()
             self.assertEqual(res, expected_data)
+
+    def test_lang(self):
+        # No lang set on the partner -> no `lang` key rendered.
+        self.partner1.lang = False
+        provider = self._get_provider(self.partner1)
+        self.assertFalse(provider.get_party()["lang"])
+        # Partner's own lang is used by default.
+        self.partner1.lang = "en_US"
+        provider = self._get_provider(self.partner1)
+        self.assertEqual(
+            provider.get_party()["lang"],
+            {"name": "English (US)", "code": "en_US", "short": "en"},
+        )
+        # `work_ctx["lang"]` takes precedence over the partner's own lang.
+        self.partner2.lang = False
+        provider = self._get_provider(self.partner2, work_ctx={"lang": "en_US"})
+        self.assertEqual(
+            provider.get_party()["lang"],
+            {"name": "English (US)", "code": "en_US", "short": "en"},
+        )
+
+    def test_partner_in_party_data(self):
+        provider = self._get_provider(self.partner1)
+        self.assertEqual(provider.get_party()["partner"], self.partner1)
 
     def test_data_limited_1(self):
         self.exc_type.id_category_ids = self.category1
