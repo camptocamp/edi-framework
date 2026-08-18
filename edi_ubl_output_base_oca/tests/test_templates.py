@@ -63,7 +63,7 @@ class TestUblOutputBaseTemplates(TransactionCase):
         self.assertEqual(identification.text, "8591234567894")
 
     def test_party_full_blocks(self):
-        self.partner.write({"vat": "CHE-107.967.501 MWST", "phone": "+41 22 000 00 00"})
+        self.partner.write({"vat": "CHE-000.000.000 MWST", "phone": "+41 123434343"})
         party = DotDict(
             name="ACME Vendor",
             identifiers=[],
@@ -94,7 +94,7 @@ class TestUblOutputBaseTemplates(TransactionCase):
         )
         self.assertEqual(
             root.find(".//cac:PartyTaxScheme/cbc:CompanyID", NS).text,
-            "CHE-107.967.501 MWST",
+            "CHE-000.000.000 MWST",
         )
         legal_entity = root.find(".//cac:PartyLegalEntity", NS)
         self.assertEqual(
@@ -106,12 +106,12 @@ class TestUblOutputBaseTemplates(TransactionCase):
         )
         contact = root.find(".//cac:Contact", NS)
         self.assertEqual(contact.find("cbc:Name", NS).text, "ACME Vendor")
-        self.assertEqual(contact.find("cbc:Telephone", NS).text, "+41 22 000 00 00")
+        self.assertEqual(contact.find("cbc:Telephone", NS).text, "+41 123434343")
 
     def test_party_show_flags_default_off(self):
         # Without explicitly passing the `show_*` flags, none of the optional
         # blocks render, even when `party.partner` carries data for them.
-        self.partner.write({"vat": "CHE-107.967.501 MWST"})
+        self.partner.write({"vat": "CHE-000.000.000 MWST"})
         party = DotDict(
             name="ACME Vendor", identifiers=[], endpoint={}, partner=self.partner
         )
