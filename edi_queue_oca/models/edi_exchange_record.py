@@ -103,19 +103,19 @@ class EdiExchangeRecord(models.Model):
         job1.on_done(self.delayable(priority=0).action_exchange_send())
         job1.delay()
 
-    def _generate_job_failed_hook(self, **kw):
-        return self._job_failed_hook("validate_error", kw=kw)
+    def _job_on_fail_generate(self, **kw):
+        return self._job_on_fail_update("validate_error", kw=kw)
 
-    def _send_job_failed_hook(self, **kw):
-        return self._job_failed_hook("output_error_on_send", kw=kw)
+    def _job_on_fail_send(self, **kw):
+        return self._job_on_fail_update("output_error_on_send", kw=kw)
 
-    def _receive_job_failed_hook(self, **kw):
-        return self._job_failed_hook("input_receive_error", kw=kw)
+    def _job_on_fail_receive(self, **kw):
+        return self._job_on_fail_update("input_receive_error", kw=kw)
 
-    def _process_job_failed_hook(self, **kw):
-        return self._job_failed_hook("input_processed_error", kw=kw)
+    def _job_on_fail_process(self, **kw):
+        return self._job_on_fail_update("input_processed_error", kw=kw)
 
-    def _job_failed_hook(self, failed_state, **kw):
+    def _job_on_fail_update(self, failed_state, **kw):
         self.ensure_one()
         self.write(
             {
