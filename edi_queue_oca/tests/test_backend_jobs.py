@@ -69,7 +69,10 @@ class EDIBackendTestJobsCase(EDIBackendCommonTestCase, JobMixin):
         }
         job.on_fail(exc_vals)
         self.assertEqual(record.edi_exchange_state, "validate_error")
-        self.assertEqual(record.exchange_error, ": ".join([exc_vals["exc_name"], exc_vals["exc_message"]]))
+        self.assertEqual(
+            record.exchange_error,
+            ": ".join([exc_vals["exc_name"], exc_vals["exc_message"]]),
+        )
         self.assertEqual(record.exchange_error_traceback, exc_vals["exc_info"])
 
     def test_output(self):
