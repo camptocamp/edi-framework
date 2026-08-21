@@ -54,6 +54,24 @@ class EDIBackendTestJobsCase(EDIBackendCommonTestCase, JobMixin):
         action = record.action_view_related_queue_jobs()
         return self.env["queue.job"].search(action["domain"])
 
+    def test_on_fail_job(self):
+        vals = {
+            "model": self.partner._name,
+            "res_id": self.partner.id,
+        }
+        record = self.backend.create_record("test_csv_output", vals)
+        self.assertEqual(record.edi_exchange_state, "new")
+        job = record.action_exchange_generate()
+        exc_vals = {
+            "exc_info": "Dummy traceback",
+            "exc_name": "Dummy exception",
+            "exc_message": "Dummy message",
+        }
+        job.on_fail(exc_vals)
+        self.assertEqual(record.edi_exchange_state, "validate_error")
+        self.assertEqual(record.exchange_error, ": ".join([exc_vals["exc_name"], exc_vals["exc_message"]]))
+        self.assertEqual(record.exchange_error_traceback, exc_vals["exc_info"])
+
     def test_output(self):
         job_counter = self.job_counter()
         vals = {

@@ -104,23 +104,23 @@ class EdiExchangeRecord(models.Model):
         job1.delay()
 
     def _job_on_fail_generate(self, **kw):
-        return self._job_on_fail_update("validate_error", kw=kw)
+        return self._job_on_fail_update("validate_error", **kw)
 
     def _job_on_fail_send(self, **kw):
-        return self._job_on_fail_update("output_error_on_send", kw=kw)
+        return self._job_on_fail_update("output_error_on_send", **kw)
 
     def _job_on_fail_receive(self, **kw):
-        return self._job_on_fail_update("input_receive_error", kw=kw)
+        return self._job_on_fail_update("input_receive_error", **kw)
 
     def _job_on_fail_process(self, **kw):
-        return self._job_on_fail_update("input_processed_error", kw=kw)
+        return self._job_on_fail_update("input_processed_error", **kw)
 
     def _job_on_fail_update(self, failed_state, **kw):
         self.ensure_one()
         self.write(
             {
                 "edi_exchange_state": failed_state,
-                "exchange_error": ": ".join(kw["exc_name"], kw["exc_message"]),
+                "exchange_error": ": ".join([kw["exc_name"], kw["exc_message"]]),
                 "exchange_error_traceback": kw["exc_info"],
             }
         )
