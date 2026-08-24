@@ -13,4 +13,5 @@
     "author": "Camptocamp, Odoo Community Association (OCA)",
     "maintainers": ["simahawk"],
     "depends": ["edi_component_oca", "edi_party_helper_oca"],
+    "post_load_hook": "post_load_hook",
 }
