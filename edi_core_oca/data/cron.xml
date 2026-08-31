@@ -29,4 +29,32 @@
         <field name="state">code</field>
         <field name="code">model.search([])._cron_check_input_exchange_sync()</field>
     </record>
+    <record id="cron_edi_configuration_hourly" model="ir.cron" forcecreate="True">
+        <field name="name">EDI configuration hourly trigger</field>
+        <field name="active" eval="True" />
+        <field name="user_id" ref="base.user_root" />
+        <field name="interval_number">1</field>
+        <field name="interval_type">hours</field>
+        <field
+            name="nextcall"
+            eval="(DateTime.now() + timedelta(hours=1)).strftime('%Y-%m-%d %H:00:00')"
+        />
+        <field name="model_id" ref="edi_core_oca.model_edi_configuration" />
+        <field name="state">code</field>
+        <field name="code">model._cron_run_by_trigger("on_cron_hourly")</field>
+    </record>
+    <record id="cron_edi_configuration_daily" model="ir.cron" forcecreate="True">
+        <field name="name">EDI configuration daily trigger</field>
+        <field name="active" eval="True" />
+        <field name="user_id" ref="base.user_root" />
+        <field name="interval_number">1</field>
+        <field name="interval_type">days</field>
+        <field
+            name="nextcall"
+            eval="(DateTime.now() + timedelta(days=1)).strftime('%Y-%m-%d 00:00:00')"
+        />
+        <field name="model_id" ref="edi_core_oca.model_edi_configuration" />
+        <field name="state">code</field>
+        <field name="code">model._cron_run_by_trigger("on_cron_daily")</field>
+    </record>
 </odoo>
