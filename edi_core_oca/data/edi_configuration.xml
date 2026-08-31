@@ -27,6 +27,21 @@
         <field name="description">Trigger when a record exchange has an error</field>
     </record>
 
+    <record id="edi_conf_trigger_cron_hourly" model="edi.configuration.trigger">
+        <field name="name">On hourly schedule</field>
+        <field name="code">on_cron_hourly</field>
+        <field
+            name="description"
+        >Trigger when the hourly EDI scheduled action runs</field>
+    </record>
+    <record id="edi_conf_trigger_cron_daily" model="edi.configuration.trigger">
+        <field name="name">On daily schedule</field>
+        <field name="code">on_cron_daily</field>
+        <field
+            name="description"
+        >Trigger when the daily EDI scheduled action runs</field>
+    </record>
+
     <!-- TODO: these 2 have to be triggered somehow -->
     <record id="edi_conf_trigger_send_via_email" model="edi.configuration.trigger">
         <field name="name">Send via email</field>
