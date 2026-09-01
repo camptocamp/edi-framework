@@ -92,6 +92,12 @@ The snippet receives at least two variables in its evaluation context:
 Plus the standard `edi_exec_snippet_do` extras (`operation`,
 `edi_action`, `old_value`, `vals`, ...).
 
+Triggers can also be fired by a scheduled action instead of by an
+exchange. This module ships `on_cron_hourly` and `on_cron_daily`, and
+you can add your own. A scheduled trigger has no originating record, so
+its configurations run on the records linked to them, or once when they
+are global.
+
 Two complementary lookup modes are available, and they can be combined
 freely on the same flow.
 
