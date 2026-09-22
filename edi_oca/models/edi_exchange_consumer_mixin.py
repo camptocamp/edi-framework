@@ -154,7 +154,7 @@ class EDIExchangeConsumerMixin(models.AbstractModel):
                         continue
                     all_models[model] = new_models[model]
                 node.addprevious(etree.fromstring(new_arch))
-            res["arch"] = etree.tostring(doc)
+            res["arch"] = etree.tostring(doc, encoding="unicode")
             res["models"] = frozendict(all_models)
         return res
 
