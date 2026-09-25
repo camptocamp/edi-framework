@@ -57,8 +57,10 @@ class EDISOEventListenerMixin(AbstractComponent):
         msg = "Cannot determine EDI state for order %(order_name)s"
         msg_args = dict(order_name=order.name)
         exc_type = order.origin_exchange_type_id
-        if not exc_type.state_workflow_ids:
-            msg += ". No workflow configured on exc type " "%(type_name)s'"
+        if not exc_type:
+            msg += ". Order has no EDI origin exchange type"
+        elif not exc_type.state_workflow_ids:
+            msg += ". No workflow configured on exc type %(type_name)s"
             msg_args["type_name"] = exc_type.name
         _logger.error(msg, msg_args)
 
@@ -95,6 +97,13 @@ class EDISOLineEventListener(Component):
         res = super()._skip_state_update(record, fields=fields, operation=operation)
         if res:
             return res
+        order = record.order_id
+        if not order.origin_exchange_record_id or not self._is_ubl_exchange(order):
+            # The line can carry its own EDI origin (e.g. after being moved to
+            # a different order via a sale order split) even when the order it
+            # now belongs to has none (or a different one): there's no EDI
+            # state to compute on that order in this case.
+            return True
         if self.env.context.get("evt_from_create") == "sale.order":
             # If lines are created from an SO creation straight
             # bypass check and state compute because it will be done anyway at create.
