@@ -318,6 +318,7 @@ class EDIBackend(models.Model):
         error = traceback = False
         message = None
         res = ""
+        sql_error = False
         try:
             with self.env.cr.savepoint():
                 self._exchange_send(exchange_record)
@@ -343,7 +344,7 @@ class EDIBackend(models.Model):
         except (OperationalError, IntegrityError):
             # We don't want the finally block to be executed in this case as
             # the cursor is already in an aborted state and any query will fail.
-            res = "__sql_error__"
+            sql_error = True
             raise
         else:
             # TODO: maybe the send handler should return desired message and state
@@ -356,7 +357,7 @@ class EDIBackend(models.Model):
             )
             res = message
         finally:
-            if res != "__sql_error__":
+            if not sql_error:
                 exchange_record.write(
                     {
                         "edi_exchange_state": state,
@@ -542,6 +543,7 @@ class EDIBackend(models.Model):
         error = traceback = False
         message = None
         res = None
+        sql_error = False
         try:
             with self.env.cr.savepoint():
                 res = self._exchange_process(exchange_record)
@@ -555,13 +557,13 @@ class EDIBackend(models.Model):
         except (OperationalError, IntegrityError):
             # We don't want the finally block to be executed in this case as
             # the cursor is already in an aborted state and any query will fail.
-            res = "__sql_error__"
+            sql_error = True
             raise
         else:
             error = traceback = None
             state = "input_processed"
         finally:
-            if res != "__sql_error__":
+            if not sql_error:
                 exchange_record.write(
                     {
                         "edi_exchange_state": state,
@@ -602,6 +604,7 @@ class EDIBackend(models.Model):
         message = None
         content = None
         res = None
+        sql_error = False
         try:
             with self.env.cr.savepoint():
                 content = self._exchange_receive(exchange_record)
@@ -626,7 +629,7 @@ class EDIBackend(models.Model):
         except (OperationalError, IntegrityError):
             # We don't want the finally block to be executed in this case as
             # the cursor is already in an aborted state and any query will fail.
-            res = "__sql_error__"
+            sql_error = True
             raise
         else:
             message = exchange_record._exchange_status_message("receive_ok")
@@ -634,7 +637,7 @@ class EDIBackend(models.Model):
             state = "input_received"
             res = message
         finally:
-            if res != "__sql_error__":
+            if not sql_error:
                 exchange_record.write(
                     {
                         "edi_exchange_state": state,
