@@ -421,7 +421,8 @@ technical field “deduplicate_on_exchange_record_status”
 (comma-separated values from “edi_exchange_state”).</li>
 </ul>
 <p>With all the types that have been enabled “Delete obsolete records”
-option, the cron will remove their obsolete records.</p>
+option, the daily database cleanup (autovacuum) removes their obsolete
+records.</p>
 <ul class="simple">
 <li>If the records are obsolete, delete them even if their type’s flag has
 been disabled.</li>
