@@ -16,6 +16,9 @@ class EDIBackend(models.Model):
         return res and not self._deduplicate_payload_unchanged(exchange_record)
 
     def exchange_send(self, exchange_record):
+        """Send exchange file."""
+        # The docstring repeats the original one: queue_job uses it as the
+        # description of the send jobs.
         # A record with nothing new to send must not stay pending: the output
         # cron would keep queuing a send job for it, forever.
         if super()._output_check_send(
