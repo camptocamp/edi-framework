@@ -216,6 +216,14 @@ class EDIExchangeType(models.Model):
         "(default is always 'Raise Error').",
     )
     allow_empty_files_on_receive = fields.Boolean(string="Allow Empty Files")
+    notify_info_related_record = fields.Boolean(
+        string="Notify related records on success",
+        default=True,
+        help="Post a note on the related records for every successful step "
+        "of the exchanges of this type. Uncheck it for frequent exchanges, "
+        "whose notes would bury the chatter of their records: warnings and "
+        "errors are always posted.",
+    )
 
     _code_uniq = models.Constraint(
         "unique(code, backend_id)", "The code must be unique per backend"

@@ -262,3 +262,33 @@ class EDIRecordTestCase(EDIBackendCommonTestCase):
         message = self.partner.message_ids[0]
         self.assertIn("Test notification", message.body)
         self.assertIn(f"/odoo/edi-exchange-records/{record.id}", message.body)
+
+    def test_notify_related_record_info_disabled(self):
+        """Info notes are skipped when the type disables them, not errors."""
+        vals = {
+            "model": self.partner._name,
+            "res_id": self.partner.id,
+        }
+        record = self.backend.create_record("test_csv_output", vals)
+        record.type_id.notify_info_related_record = False
+        messages = self.partner.message_ids
+        record._notify_related_record("Quiet success")
+        self.assertEqual(self.partner.message_ids, messages)
+        record._notify_related_record("Loud failure", level="error")
+        new_message = self.partner.message_ids - messages
+        self.assertEqual(len(new_message), 1)
+        self.assertIn("Loud failure", new_message.body)
+
+    def test_notify_related_record_info_enabled_by_default(self):
+        """Info notes are posted by default."""
+        vals = {
+            "model": self.partner._name,
+            "res_id": self.partner.id,
+        }
+        record = self.backend.create_record("test_csv_output", vals)
+        self.assertTrue(record.type_id.notify_info_related_record)
+        messages = self.partner.message_ids
+        record._notify_related_record("Success")
+        new_message = self.partner.message_ids - messages
+        self.assertEqual(len(new_message), 1)
+        self.assertIn("Success", new_message.body)

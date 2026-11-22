@@ -168,3 +168,10 @@ Typical use cases:
 - Switching between EDI and email delivery based on partner
   preferences
 
+
+## Notes on the related records
+
+Each step of an exchange (generated, sent, processed...) posts a note on
+the records the exchange relates to. For frequent exchanges these notes
+bury the chatter of the records: uncheck *Notify related records on
+success* on the exchange type to post only the warnings and errors.
