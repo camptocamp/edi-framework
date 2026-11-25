@@ -1,7 +1,3 @@
-.. image:: https://odoo-community.org/readme-banner-image
-   :target: https://odoo-community.org/get-involved?utm_source=readme
-   :alt: Odoo Community Association
-
 ===================
 EDI WebService Core
 ===================
@@ -17,7 +13,7 @@ EDI WebService Core
 .. |badge1| image:: https://img.shields.io/badge/maturity-Beta-yellow.png
     :target: https://odoo-community.org/page/development-status
     :alt: Beta
-.. |badge2| image:: https://img.shields.io/badge/license-AGPL--3-blue.png
+.. |badge2| image:: https://img.shields.io/badge/licence-AGPL--3-blue.png
     :target: http://www.gnu.org/licenses/agpl-3.0-standalone.html
     :alt: License: AGPL-3
 .. |badge3| image:: https://img.shields.io/badge/github-OCA%2Fedi--framework-lightgray.png?logo=github
@@ -95,6 +91,12 @@ exchange types sending through it.
 
 If you want to send data as bytes you can use the option send_as_bytes
 on the exchange type (same tab).
+
+The *EDI User* group implies the *Webservice User* group (see
+``webservice_core`` README), so EDI users and queue jobs can send files
+through a webservice without having access to the webservice
+credentials. Other users sending exchanges need to be given the
+*Webservice User* group.
 
 Bug Tracker
 ===========
