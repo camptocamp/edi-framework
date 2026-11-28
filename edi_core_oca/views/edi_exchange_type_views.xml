@@ -65,6 +65,7 @@
                                 name="quick_exec"
                                 invisible="not exchange_file_auto_generate"
                             />
+                            <field name="notify_info_related_record" />
                             <field name="ack_type_id" />
                             <field name="ack_for_type_ids" widget="many2many_tags" />
                             <field name="partner_ids" widget="many2many_tags" />

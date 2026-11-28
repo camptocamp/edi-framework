@@ -570,8 +570,14 @@ class EDIExchangeRecord(models.Model):
         )
 
     def _notify_related_record(self, message, level="info"):
-        """Post notification on the original records."""
-        for rec in self.related_record_ids:
+        """Post notification on the original records.
+
+        Info notes are skipped for the exchange types that disable them.
+        """
+        records = self
+        if level == "info":
+            records = self.filtered("type_id.notify_info_related_record")
+        for rec in records.related_record_ids:
             rec._notify_related_record(message, level)
 
     def _trigger_edi_event(self, name, suffix=None, target=None, **kw):
